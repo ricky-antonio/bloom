@@ -38,7 +38,7 @@ export interface GraphState {
 }
 
 export type GraphAction =
-  | { type: 'EXPAND_CONCEPT'; concept: string; depth: number }
+  | { type: 'EXPAND_CONCEPT'; concept: string; nodeId?: string; depth: number }
   | { type: 'ADD_EXPANSION_NODES'; nodes: ConceptNode[]; edges: ConceptEdge[] }
   | { type: 'SELECT_NODE'; nodeId: string | null }
   | { type: 'SET_DEFINITION'; nodeId: string; definition: string; relatedTags: string[] }

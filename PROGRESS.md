@@ -5,6 +5,10 @@ Phase 2 — Graph Engine
 
 ## Completed
 <!-- Newest entries go at the top. Never delete entries — they are the audit trail. -->
+- [x] P2.4 — ConceptGraph: components/graph/ConceptGraph.tsx (D3 simulation owner; dynamic import of D3, three effects: load/structural/expansion, tick handler updates DOM directly via data-node-id/data-edge-id selectors without React state, nodesRef/edgesRef/stateRef for stale-closure safety, AbortController on expansion cleanup). Added pointerEvents: 'all' to GraphNode <g> to override GraphCanvas inner-group pointer-events: none. page.tsx wired with GraphProvider + Toaster. Zero TS errors, 51 tests passing, 93.66% line coverage, build succeeds.
+- [x] P2.3 — GraphNode: components/graph/GraphNode.tsx (all four ring variants with correct radii/font sizes, hover CSS scale, selected drop-shadow filter, isExpanding pulse+spinner ring, aria-label/aria-pressed/role="button"/tabIndex/data-expanding), app/globals.css (spin and pulse keyframes), tests/components/GraphNode.test.tsx (7 tests, all passing). Zero TS errors, 51 tests passing.
+- [x] P2.2 — GraphCanvas + GraphEdge: components/graph/GraphCanvas.tsx (SVG container with D3 zoom/pan, forwardRef + useImperativeHandle exposing zoomIn/zoomOut/resetZoom, scaleExtent [0.3, 2.5], pointer-events: none on inner group), components/graph/GraphEdge.tsx (SVG line with data-edge-id, ring-based stroke opacity using #BADDFF, D3 sets x1/y1/x2/y2 on tick). Zero TS errors, 44 tests passing.
+- [x] P2.1 — GraphContext: lib/context/GraphContext.tsx — GraphStateContext, graphReducer (all 8 action cases calling lib functions), GraphProvider, useGraphState hook. Added nodeId?: string to EXPAND_CONCEPT in lib/types.ts. Zero TS errors, 44 tests passing.
 - [x] P1.6 — Phase 1 final checklist: all automated checks pass (type-check, 44 tests, 94.35% line coverage / 100% function / 79.38% branch, build). API key verified (type: message). Key leak check clean. CI workflow confirmed. Model ID updated to claude-sonnet-4-6 (claude-sonnet-4-20250514 deprecated). Phase 1 complete.
 - [x] P1.5 — API routes: app/api/expand/route.ts (streaming SSE, rate limited 15/min/IP, input validated) and app/api/define/route.ts (non-streaming JSON, rate limited, both concept + parentConcept validated). Zero TS errors. 44 tests passing. Build succeeds with both routes listed as Dynamic.
 - [x] P1.4 — Force config + AI lib: lib/force.ts (getLinkDistance, getChargeStrength, getCollisionRadius, createSimulation), lib/ai/expand.ts (buildExpansionPrompt, parseExpansionResponse with retry + fallback), tests/lib/ai/expand.test.ts (10 tests, all passing), lib/ai/define.ts (buildDefinitionPrompt, parseDefinitionResponse with retry + fallback), tests/lib/ai/define.test.ts (4 tests, all passing). Coverage: 91.15% lines / 100% functions / 79.38% branches. Zero TS errors. 44 tests total.
@@ -13,7 +17,7 @@ Phase 2 — Graph Engine
 - [x] P1.1 — Project setup: Next.js 16 scaffolded, all deps installed, tsconfig strict mode verified, vitest.config.ts created, tests/setup.ts and tests/mocks/anthropic.ts created, npm scripts added (type-check/test/test:watch/test:coverage), .github/workflows/ci.yml created, directory structure created. All three checks pass: zero TS errors, "No test files found" (correct), build succeeds.
 
 ## In progress
-- [ ] P2.1 — GraphContext: lib/context/GraphContext.tsx (React Context + useReducer, all GraphAction cases, dispatch wiring)
+- [ ] P2.5 — SearchBar: components/ui/SearchBar.tsx + tests/components/SearchBar.test.tsx + wire into page.tsx
 
 ## Known issues
 None.
