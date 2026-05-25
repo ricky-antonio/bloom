@@ -1,45 +1,195 @@
 # bloom
 
-Type any word. Watch it bloom into a map of connected ideas.
+**Every idea has roots.**
 
-![Bloom preview](bloom-preview.png)
+A session-only concept-mapping tool that turns any word into a living, force-directed graph of connected ideas — powered by Claude AI and animated with D3 physics. Click any node to re-centre the universe around it.
 
-An infinite concept exploration tool powered by Claude AI — every click re-centres the universe around a new idea. No accounts, no history, just pure exploration.
-
-**Status:** Phase 1 — Foundation (in progress)  
-**Live:** not yet deployed
+> Stack: Next.js 15 · TypeScript · D3.js · Anthropic Claude
 
 ---
 
-## Quick start
+## Overview
+
+bloom is a deliberately minimal AI application: no accounts, no database, no persistence. Every session is its own universe. The entire design challenge was to make the AI interaction feel alive — streaming nodes directly into a force simulation, letting the graph breathe, and making re-centring feel like genuine discovery rather than a page reload.
+
+The interesting problems here are performance and perception. D3 force physics runs at 60fps; React cannot. The AI response streams token-by-token; the graph can't wait. Every architectural decision follows from those two constraints.
+
+---
+
+## Tech Stack
+
+### Frontend
+
+| Technology                   | Usage                                                                 |
+| ---------------------------- | --------------------------------------------------------------------- |
+| **Next.js 15** (App Router)  | File-based routing, server components, API route handlers             |
+| **TypeScript** (strict mode) | End-to-end type safety; `noImplicitAny`, `strictNullChecks`           |
+| **Tailwind CSS**             | Utility-first styling; warm cream palette, light mode only            |
+| **D3.js** (force/zoom/drag)  | Force simulation, zoom/pan, drag — dynamically imported, never bundled |
+| **@tabler/icons-react**      | Tree-shakable icon system                                             |
+| **react-hot-toast**          | Auto-dismissing error toasts for AI failures                          |
+
+### AI
+
+| Technology                      | Usage                                                          |
+| ------------------------------- | -------------------------------------------------------------- |
+| **Anthropic Claude Sonnet 4.6** | Concept expansion (ring1 + ring2) and streaming definitions    |
+| **@anthropic-ai/sdk**           | SSE streaming via `stream.toReadableStream()` for expansion    |
+
+### Testing & Quality
+
+| Technology                | Usage                                             |
+| ------------------------- | ------------------------------------------------- |
+| **Vitest**                | Unit and integration test runner                  |
+| **React Testing Library** | Component tests from the user's perspective       |
+| **@vitest/coverage-v8**   | Istanbul coverage with enforced per-phase targets |
+| **jsdom**                 | Browser environment simulation                    |
+
+---
+
+## How It Works
+
+### The graph model
+
+Every concept lives at one of four rings:
+
+| Ring | Role | Colour |
+|------|------|--------|
+| **core** | The current concept — pinned at the origin | Sky blue border |
+| **ring1** | 6 AI-generated direct associations | Category-coded |
+| **ring2** | 12 AI-generated second-degree associations (2 per ring1) | Muted category tones |
+| **ring3** | Promoted nodes pushed outward by re-centring | Near-invisible |
+
+Nodes carry two orthogonal category fields — a deliberate design decision:
+- `semanticDistance` (`direct / adjacent / tangential / distant`) — drives ring assignment and pruning priority
+- `category` (`awareness / identity / experiential`) — drives colour coding independently
+
+A node can be semantically close but experiential in nature. The two fields don't interfere.
+
+### AI expansion
+
+`POST /api/expand` streams a single JSON object containing 18 nodes (6 ring1 + 12 ring2) as a server-sent event stream. The client reads the stream, accumulates the response, and parses it once complete — then dispatches `ADD_EXPANSION_NODES` into the React reducer. The D3 simulation is restarted with `alpha(0.8)` and the graph reshuffles.
+
+`POST /api/define` returns a non-streaming 2–3 sentence definition and exactly 4 related concept tags. The `StreamingDefinition` component animates the text character-by-character client-side, independent of the SSE stream.
+
+### Re-centring
+
+Clicking "Expand this concept" on any node triggers a state promotion cascade:
+
+1. Clicked node → `ring: 'core'`, pinned at `(0, 0)`
+2. Old core → `ring: 'ring2'`, fixed position released
+3. Old ring1 nodes still connected to the new core → `ring: 'ring2'`
+4. Old ring1 nodes not connected → `ring: 'ring3'` (pruning candidates)
+5. `pruneGraph` enforces the 40-node hard cap (ring3 without definition pruned first)
+6. New ring1 + ring2 nodes generated by AI
+
+Ring 3 is never AI-generated — it emerges from node promotion. This saves tokens and keeps prompts simple.
+
+---
+
+## Architecture Highlights
+
+**D3 owns positions, React owns structure.** Calling `setState` in a D3 tick handler causes 60 React re-renders per second and kills the animation. D3 mutates node `x/y` directly on tick; React only re-renders when the node array structurally changes (add/remove).
+
+**Dynamic import for D3.** D3 is ~500kb. It's imported with `await import('d3')` inside a `useEffect` — never at the module level. It never appears in the initial bundle.
+
+**React Context + useReducer, no external library.** All graph mutations (`createCoreNode`, `addExpansionNodes`, `recentreGraph`, `pruneGraph`) live in pure `lib/` functions. The reducer calls them; components dispatch actions. Predictable state transitions without Redux overhead.
+
+**In-memory rate limiting.** `Map<string, number[]>` with a 15 req/min/IP sliding window on every AI route. No Redis, no Upstash — acceptable for a portfolio app where serverless instance resets are a non-issue.
+
+**Parse-and-fallback.** Every AI response is parsed inside a try/catch. On failure, one retry. On second failure, a typed fallback (`EXPANSION_FALLBACK`, `DEFINITION_FALLBACK`) keeps the graph alive. The UI never crashes from a bad API response.
+
+---
+
+## Features
+
+- **Force-directed graph** — D3 force simulation with ring-based charge and link distances; nodes settle into orbital rings naturally
+- **Streaming concept expansion** — AI response streams directly into the graph via SSE; `LoadingBloom` animation plays until ring1 nodes appear
+- **Re-centring** — any node can become the new core; the graph reshuffles with `alpha(0.8)` energy
+- **Pruning** — hard 40-node cap enforced after every re-centre; ring3 nodes pruned first, core and ring1 never pruned
+- **Definition panel** — character-by-character definition reveal with 4 related concept chips; `AbortController` cancels in-flight requests on unmount
+- **Category colour system** — awareness (sky `#BADDFF`), identity (peach `#FFDBBB`), experiential (mint `#BAFFF5`); ring2 at 40% opacity; ring3 near-invisible
+- **Keyboard accessibility** — all nodes `role="button"` with `tabIndex`, Escape closes panels, full aria labelling
+- **Rate limiting** — 15 req/min/IP on all AI routes with graceful 429 toast response
+- **Input validation** — server-side concept length and type checks on every route, mirrored client-side with inline feedback
+
+---
+
+## Testing
+
+```
+Phase 1 target: ≥ 75% lines · ≥ 75% functions · ≥ 70% branches
+```
+
+**Test categories:**
+
+- Unit tests for all pure `lib/` functions — graph mutations, colour system, AI prompt builders and response parsers
+- Integration tests for every API route — rate limiting, input validation, Anthropic SDK error paths, streamed response shape
+- Component tests with React Testing Library — behaviour only, never CSS classes or D3 internals
+- Shared mocks in `tests/mocks/anthropic.ts` — never duplicated inline
+
+---
+
+## Getting Started
 
 ```bash
-cp .env.example .env.local
-# Add your ANTHROPIC_API_KEY to .env.local
-
+git clone https://github.com/ricky-antonio/bloom.git
+cd bloom
 npm install
+cp .env.example .env.local   # add your ANTHROPIC_API_KEY
 npm run dev
 ```
 
-Full setup: see [`.claude/setup.md`](.claude/setup.md)
+### Environment Variables
 
----
+```env
+ANTHROPIC_API_KEY=
+```
 
-## Stack
-
-- Next.js 15 (app router)
-- D3.js — force-directed graph
-- Anthropic claude-sonnet-4 — streaming concept expansion
-- TypeScript strict mode
-- Vitest + React Testing Library
-
----
-
-## Development
+### Scripts
 
 ```bash
-npm run dev          # start dev server
-npm run type-check   # TypeScript check
-npm test             # run tests
-npm run build        # production build
+npm run dev            # start dev server
+npm run build          # production build
+npm run type-check     # tsc --noEmit (strict)
+npm test               # vitest run
+npm run test:watch     # vitest watch mode
+npm run test:coverage  # coverage report with thresholds
 ```
+
+---
+
+## Project Structure
+
+```
+app/
+  api/
+    expand/route.ts     # POST — streams ring1 + ring2 as SSE
+    define/route.ts     # POST — returns definition + 4 related tags
+  page.tsx              # single page, full-viewport graph
+  layout.tsx            # Inter font, Toaster
+components/
+  graph/                # ConceptGraph, GraphCanvas, GraphNode, GraphEdge
+  ui/                   # SearchBar, DetailPanel, StreamingDefinition, ConceptTags,
+                        # LoadingBloom, EmptyState, Legend, ZoomControls
+  layout/               # Toolbar
+lib/
+  types.ts              # all shared types — source of truth
+  colour.ts             # getNodeColour, CATEGORY_COLOURS
+  graph.ts              # createCoreNode, addExpansionNodes, recentreGraph, pruneGraph, exportGraph
+  force.ts              # D3 simulation config
+  context/
+    GraphContext.tsx     # GraphStateContext, graphReducer
+  ai/
+    expand.ts           # buildExpansionPrompt, parseExpansionResponse
+    define.ts           # buildDefinitionPrompt, parseDefinitionResponse
+tests/
+  lib/                  # colour, graph, ai unit tests
+  components/           # RTL component tests
+  mocks/
+    anthropic.ts        # shared Anthropic SDK mock
+```
+
+---
+
+Built by [Ricardo Monterrosa](https://github.com/ricky-antonio)
