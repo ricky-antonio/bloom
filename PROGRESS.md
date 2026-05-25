@@ -5,13 +5,14 @@ Phase 1 — Foundation (in progress)
 
 ## Completed
 <!-- Newest entries go at the top. Never delete entries — they are the audit trail. -->
+- [x] P1.5 — API routes: app/api/expand/route.ts (streaming SSE, rate limited 15/min/IP, input validated) and app/api/define/route.ts (non-streaming JSON, rate limited, both concept + parentConcept validated). Zero TS errors. 44 tests passing. Build succeeds with both routes listed as Dynamic.
 - [x] P1.4 — Force config + AI lib: lib/force.ts (getLinkDistance, getChargeStrength, getCollisionRadius, createSimulation), lib/ai/expand.ts (buildExpansionPrompt, parseExpansionResponse with retry + fallback), tests/lib/ai/expand.test.ts (10 tests, all passing), lib/ai/define.ts (buildDefinitionPrompt, parseDefinitionResponse with retry + fallback), tests/lib/ai/define.test.ts (4 tests, all passing). Coverage: 91.15% lines / 100% functions / 79.38% branches. Zero TS errors. 44 tests total.
 - [x] P1.3 — Graph lib: lib/graph.ts (createCoreNode, addExpansionNodes, recentreGraph, pruneGraph, exportGraph), tests/lib/graph.test.ts (20 tests, all passing). Coverage: 96.66% lines / 100% functions / 82.25% branches. Zero TS errors.
 - [x] P1.2 — Types + colour lib: lib/types.ts (all shared types, two category fields, GraphAction union, EXPANSION_FALLBACK, DEFINITION_FALLBACK), lib/colour.ts (getNodeColour, CATEGORY_COLOURS), tests/lib/colour.test.ts (8 tests, all passing). Zero TS errors.
 - [x] P1.1 — Project setup: Next.js 16 scaffolded, all deps installed, tsconfig strict mode verified, vitest.config.ts created, tests/setup.ts and tests/mocks/anthropic.ts created, npm scripts added (type-check/test/test:watch/test:coverage), .github/workflows/ci.yml created, directory structure created. All three checks pass: zero TS errors, "No test files found" (correct), build succeeds.
 
 ## In progress
-- [ ] P1.5 — API routes: app/api/expand/route.ts (streaming, rate limited, input validated), app/api/define/route.ts (non-streaming, rate limited, input validated)
+- [ ] P1.6 — CI workflow: .github/workflows/ci.yml (if not already done)
 
 ## Known issues
 None.
