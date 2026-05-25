@@ -39,15 +39,14 @@ export async function POST(req: Request): Promise<Response> {
 
   try {
     const client = new Anthropic()
-    const stream = client.messages.stream({
+    const message = await client.messages.create({
       model: 'claude-sonnet-4-6',
       max_tokens: 800,
       messages: [{ role: 'user', content: buildExpansionPrompt(concept.trim(), depthValue) }],
     })
 
-    return new Response(stream.toReadableStream(), {
-      headers: { 'Content-Type': 'text/event-stream' },
-    })
+    const text = message.content[0]?.type === 'text' ? message.content[0].text : ''
+    return Response.json({ text })
   } catch {
     return Response.json(
       { error: 'AI service unavailable', code: 'AI_NETWORK_FAILURE' },

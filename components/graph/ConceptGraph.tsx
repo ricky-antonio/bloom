@@ -84,7 +84,7 @@ export default function ConceptGraph() {
     if (simulationRef.current) {
       simulationRef.current.nodes(nodesRef.current)
       simulationRef.current.force('link')?.links(edgesRef.current)
-      simulationRef.current.alpha(0.8).restart()
+      simulationRef.current.alpha(0.4).restart()
     } else {
       simulationRef.current = createSimulation(d3, nodesRef.current, edgesRef.current)
       simulationRef.current.on('tick', tickHandler)
@@ -119,26 +119,13 @@ export default function ConceptGraph() {
           return
         }
 
-        const reader = response.body?.getReader()
-        if (!reader) {
-          dispatch({ type: 'SET_EXPANDING', nodeId: null })
-          toast.error("Couldn't reach the AI. Try again.")
-          return
-        }
+        if (controller.signal.aborted) return
 
-        const decoder = new TextDecoder()
-        let accumulated = ''
-
-        while (true) {
-          const { done, value } = await reader.read()
-          if (done) break
-          if (controller.signal.aborted) return
-          accumulated += decoder.decode(value, { stream: true })
-        }
+        const { text } = await response.json() as { text: string }
 
         if (controller.signal.aborted) return
 
-        const parsed = parseExpansionResponse(accumulated)
+        const parsed = parseExpansionResponse(text)
         const { nodes: newNodes, edges: newEdges } = addExpansionNodes(
           stateRef.current,
           parsed,

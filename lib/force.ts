@@ -33,6 +33,6 @@ export function createSimulation(d3: any, nodes: ConceptNode[], edges: ConceptEd
       'collide',
       d3.forceCollide().radius((d: any) => getCollisionRadius((d as ConceptNode).ring)) // d3 internal
     )
-    .alphaDecay(0.02)
-    .velocityDecay(0.4)
+    .alphaDecay(0.06)
+    .velocityDecay(0.6)
 }

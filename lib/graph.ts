@@ -33,7 +33,7 @@ export function addExpansionNodes(
     const id = item.label.toLowerCase().trim()
     if (existingIds.has(id)) continue
     existingIds.add(id)
-    // Seed positions on a circle at r=100 so link force pushes outward, not inward
+    // Seed at r=150 — just inside the link target of 160px so force pushes outward gently
     const angle = (i / expansion.ring1.length) * 2 * Math.PI
     ring1Nodes.push({
       id,
@@ -43,16 +43,19 @@ export function addExpansionNodes(
       category: item.category,
       fx: null,
       fy: null,
-      x: Math.cos(angle) * 100,
-      y: Math.sin(angle) * 100,
+      x: Math.cos(angle) * 150,
+      y: Math.sin(angle) * 150,
       depth,
       expanded: false,
       parentId,
     })
   }
 
+  // Track how many ring2 nodes have been assigned to each ring1 parent for angular spread
+  const ring2PerParent = new Map<string, number>()
+
   const ring2Nodes: ConceptNode[] = []
-  for (const [i, item] of expansion.ring2.entries()) {
+  for (const item of expansion.ring2) {
     const id = item.label.toLowerCase().trim()
     if (existingIds.has(id)) continue
 
@@ -62,8 +65,17 @@ export function addExpansionNodes(
     const ring2ParentId = parentRing1?.id ?? parentId
 
     existingIds.add(id)
-    // Seed positions on a circle at r=240 so ring2 starts outside ring1 zone
-    const angle = (i / expansion.ring2.length) * 2 * Math.PI
+
+    // Seed ring2 in the direction of its ring1 parent to avoid crossing through the core
+    const parentAngle = parentRing1
+      ? Math.atan2(parentRing1.y ?? 0, parentRing1.x ?? 0)
+      : Math.random() * 2 * Math.PI
+    const siblingCount = ring2PerParent.get(ring2ParentId) ?? 0
+    ring2PerParent.set(ring2ParentId, siblingCount + 1)
+    // Slight angular offset so two ring2 siblings don't stack on top of each other
+    const siblingOffset = (siblingCount - 0.5) * 0.4
+    const seedAngle = parentAngle + siblingOffset
+
     ring2Nodes.push({
       id,
       label: item.label.trim(),
@@ -72,8 +84,8 @@ export function addExpansionNodes(
       category: item.category,
       fx: null,
       fy: null,
-      x: Math.cos(angle) * 240,
-      y: Math.sin(angle) * 240,
+      x: Math.cos(seedAngle) * 360,
+      y: Math.sin(seedAngle) * 360,
       depth,
       expanded: false,
       parentId: ring2ParentId,

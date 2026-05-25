@@ -50,7 +50,7 @@ const GraphCanvas = React.forwardRef<GraphCanvasHandle, GraphCanvasProps>(
         if (width > 0 && height > 0) {
           d3.select(svgEl).call(
             zoom.transform,
-            d3.zoomIdentity.translate(width / 2, height / 2).scale(1.4)
+            d3.zoomIdentity.translate(width / 2, height / 2).scale(0.9)
           )
         }
       })
