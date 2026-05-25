@@ -9,6 +9,7 @@ interface GraphNodeProps {
   isSelected: boolean
   isExpanding: boolean
   onSelect: (nodeId: string) => void
+  onDeselect?: () => void
 }
 
 const RING_RADIUS: Record<NodeRing, number> = {
@@ -39,7 +40,7 @@ const RING_STROKE_WIDTH: Record<NodeRing, number> = {
   ring3: 1,
 }
 
-export default function GraphNode({ node, isSelected, isExpanding, onSelect }: GraphNodeProps) {
+export default function GraphNode({ node, isSelected, isExpanding, onSelect, onDeselect }: GraphNodeProps) {
   const [hovered, setHovered] = useState(false)
 
   const colours = getNodeColour(node.ring, node.category)
@@ -50,20 +51,26 @@ export default function GraphNode({ node, isSelected, isExpanding, onSelect }: G
   const circumference = 2 * Math.PI * spinnerRadius
 
   function handleClick() {
-    if (!isSelected) {
+    if (isSelected) {
+      onDeselect?.()
+    } else {
       onSelect(node.id)
     }
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === 'Enter' && !isSelected) {
-      onSelect(node.id)
+    if (e.key === 'Enter') {
+      if (isSelected) {
+        onDeselect?.()
+      } else {
+        onSelect(node.id)
+      }
     }
   }
 
   return (
+    <g data-node-id={node.id}>
     <g
-      data-node-id={node.id}
       data-expanding={isExpanding}
       role="button"
       tabIndex={0}
@@ -153,6 +160,7 @@ export default function GraphNode({ node, isSelected, isExpanding, onSelect }: G
           }}
         />
       )}
+    </g>
     </g>
   )
 }

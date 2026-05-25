@@ -44,6 +44,15 @@ const GraphCanvas = React.forwardRef<GraphCanvasHandle, GraphCanvasProps>(
 
         zoomBehaviourRef.current = zoom
         d3.select(svgEl).call(zoom)
+
+        // Centre and zoom so the graph fills the canvas comfortably at first load
+        const { width, height } = svgEl.getBoundingClientRect()
+        if (width > 0 && height > 0) {
+          d3.select(svgEl).call(
+            zoom.transform,
+            d3.zoomIdentity.translate(width / 2, height / 2).scale(1.4)
+          )
+        }
       })
 
       return () => {

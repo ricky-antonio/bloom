@@ -29,10 +29,12 @@ export function addExpansionNodes(
   const existingIds = new Set(state.nodes.map((n) => n.id))
 
   const ring1Nodes: ConceptNode[] = []
-  for (const item of expansion.ring1) {
+  for (const [i, item] of expansion.ring1.entries()) {
     const id = item.label.toLowerCase().trim()
     if (existingIds.has(id)) continue
     existingIds.add(id)
+    // Seed positions on a circle at r=100 so link force pushes outward, not inward
+    const angle = (i / expansion.ring1.length) * 2 * Math.PI
     ring1Nodes.push({
       id,
       label: item.label.trim(),
@@ -41,6 +43,8 @@ export function addExpansionNodes(
       category: item.category,
       fx: null,
       fy: null,
+      x: Math.cos(angle) * 100,
+      y: Math.sin(angle) * 100,
       depth,
       expanded: false,
       parentId,
@@ -48,7 +52,7 @@ export function addExpansionNodes(
   }
 
   const ring2Nodes: ConceptNode[] = []
-  for (const item of expansion.ring2) {
+  for (const [i, item] of expansion.ring2.entries()) {
     const id = item.label.toLowerCase().trim()
     if (existingIds.has(id)) continue
 
@@ -58,6 +62,8 @@ export function addExpansionNodes(
     const ring2ParentId = parentRing1?.id ?? parentId
 
     existingIds.add(id)
+    // Seed positions on a circle at r=240 so ring2 starts outside ring1 zone
+    const angle = (i / expansion.ring2.length) * 2 * Math.PI
     ring2Nodes.push({
       id,
       label: item.label.trim(),
@@ -66,6 +72,8 @@ export function addExpansionNodes(
       category: item.category,
       fx: null,
       fy: null,
+      x: Math.cos(angle) * 240,
+      y: Math.sin(angle) * 240,
       depth,
       expanded: false,
       parentId: ring2ParentId,

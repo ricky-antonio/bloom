@@ -166,6 +166,11 @@ export default function ConceptGraph() {
     [dispatch]
   )
 
+  const handleDeselect = useCallback(
+    () => dispatch({ type: 'SELECT_NODE', nodeId: null }),
+    [dispatch]
+  )
+
   const nodeComponents = useMemo(
     () =>
       state.nodes.map(node => (
@@ -175,9 +180,10 @@ export default function ConceptGraph() {
           isSelected={state.activeNodeId === node.id}
           isExpanding={state.isExpanding && state.expansionNodeId === node.id}
           onSelect={handleSelect}
+          onDeselect={handleDeselect}
         />
       )),
-    [state.nodes, state.activeNodeId, state.isExpanding, state.expansionNodeId, handleSelect]
+    [state.nodes, state.activeNodeId, state.isExpanding, state.expansionNodeId, handleSelect, handleDeselect]
   )
 
   const edgeComponents = useMemo(

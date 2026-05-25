@@ -76,6 +76,15 @@ describe('GraphNode', () => {
     expect(onSelect).not.toHaveBeenCalled()
   })
 
+  it('calls onDeselect when selected node is clicked', () => {
+    const onSelect = vi.fn()
+    const onDeselect = vi.fn()
+    renderNode({ node: coreNode, isSelected: true, isExpanding: false, onSelect, onDeselect })
+    fireEvent.click(screen.getByRole('button'))
+    expect(onDeselect).toHaveBeenCalledOnce()
+    expect(onSelect).not.toHaveBeenCalled()
+  })
+
   it('applies expanding class/attribute when isExpanding is true', () => {
     renderNode({ node: coreNode, isSelected: false, isExpanding: true, onSelect: vi.fn() })
     const button = screen.getByRole('button')

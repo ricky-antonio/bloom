@@ -1,7 +1,7 @@
 # Bloom — Progress
 
 ## Current phase
-Phase 2 — Graph Engine
+Phase 3 — UI & Interaction
 
 ## Completed
 <!-- Newest entries go at the top. Never delete entries — they are the audit trail. -->
@@ -17,8 +17,10 @@ Phase 2 — Graph Engine
 - [x] P1.2 — Types + colour lib: lib/types.ts (all shared types, two category fields, GraphAction union, EXPANSION_FALLBACK, DEFINITION_FALLBACK), lib/colour.ts (getNodeColour, CATEGORY_COLOURS), tests/lib/colour.test.ts (8 tests, all passing). Zero TS errors.
 - [x] P1.1 — Project setup: Next.js 16 scaffolded, all deps installed, tsconfig strict mode verified, vitest.config.ts created, tests/setup.ts and tests/mocks/anthropic.ts created, npm scripts added (type-check/test/test:watch/test:coverage), .github/workflows/ci.yml created, directory structure created. All three checks pass: zero TS errors, "No test files found" (correct), build succeeds.
 
+- [x] P2.6 — Phase 2 final checklist + post-checklist fixes: (1) viewport centering (initial D3 zoom translate(width/2, height/2).scale(1.4)); (2) node deselect (onDeselect callback, SELECT_NODE null); (3) ring2 node stacking fix (seeded positions: ring1 starts at r=60 circle, ring2 starts at r=180 circle, prevents nodes spawning at origin and falling through the core); (4) removed forceCenter (core fixed at fx/fy, centre force was pulling ring2 inward). Final state: ring1 at ~147px, ring2 at ~351px from core, no stacking. 59 tests, 92.89% line coverage. Phase 2 complete.
+
 ## In progress
-- [ ] P2.6 — Phase 2 manual verification checklist + final checks
+<!-- none -->
 
 ## Known issues
 None.
