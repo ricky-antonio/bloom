@@ -1,41 +1,46 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --bg:        #F7F4F0;
+  --surface:   #FFFFFF;
+  --surface-2: #F0EDE8;
+  --border:    rgba(73,101,128,0.10);
+  --border-2:  rgba(73,101,128,0.18);
+  --tx-1:      #496580;
+  --tx-2:      #8AABBC;
+  --tx-3:      #BACCDA;
+  --sky:       #BADDFF;
+  --sky-text:  #5A8AAA;
+  --peach:     #FFDBBB;
+  --peach-text:#C07040;
+  --mint:      #BAFFF5;
+  --mint-text: #40A090;
+  --radius:    8px;
+  --radius-lg: 14px;
+  --radius-xl: 22px;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--tx-1);
+  font-family: Inter, Arial, Helvetica, sans-serif;
 }
 
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
 @keyframes pulse {
-  from {
-    transform: scale(1);
-  }
-  to {
-    transform: scale(1.05);
-  }
+  from { transform: scale(1); }
+  to   { transform: scale(1.05); }
+}
+
+@keyframes shake {
+  0%,  100% { transform: translateX(0); }
+  20%, 60%  { transform: translateX(-6px); }
+  40%, 80%  { transform: translateX(6px); }
+}
+
+.search-shake {
+  animation: shake 0.4s ease;
 }

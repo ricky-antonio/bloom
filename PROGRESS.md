@@ -5,6 +5,7 @@ Phase 2 — Graph Engine
 
 ## Completed
 <!-- Newest entries go at the top. Never delete entries — they are the audit trail. -->
+- [x] P2.5 — SearchBar: components/ui/SearchBar.tsx (pill input, atom icon, sparkles submit, shake animation, inline error, focus border, disabled state), tests/components/SearchBar.test.tsx (7 tests all passing), app/page.tsx wired with HomeContent (useGraphState, dispatch CLEAR_GRAPH+EXPAND_CONCEPT on submit, SearchBar disabled during expansion, 50px toolbar placeholder). globals.css updated with CSS variables + shake keyframe. Zero TS errors, 58 tests passing, 93.29% line coverage, build succeeds.
 - [x] P2.4 — ConceptGraph: components/graph/ConceptGraph.tsx (D3 simulation owner; dynamic import of D3, three effects: load/structural/expansion, tick handler updates DOM directly via data-node-id/data-edge-id selectors without React state, nodesRef/edgesRef/stateRef for stale-closure safety, AbortController on expansion cleanup). Added pointerEvents: 'all' to GraphNode <g> to override GraphCanvas inner-group pointer-events: none. page.tsx wired with GraphProvider + Toaster. Zero TS errors, 51 tests passing, 93.66% line coverage, build succeeds.
 - [x] P2.3 — GraphNode: components/graph/GraphNode.tsx (all four ring variants with correct radii/font sizes, hover CSS scale, selected drop-shadow filter, isExpanding pulse+spinner ring, aria-label/aria-pressed/role="button"/tabIndex/data-expanding), app/globals.css (spin and pulse keyframes), tests/components/GraphNode.test.tsx (7 tests, all passing). Zero TS errors, 51 tests passing.
 - [x] P2.2 — GraphCanvas + GraphEdge: components/graph/GraphCanvas.tsx (SVG container with D3 zoom/pan, forwardRef + useImperativeHandle exposing zoomIn/zoomOut/resetZoom, scaleExtent [0.3, 2.5], pointer-events: none on inner group), components/graph/GraphEdge.tsx (SVG line with data-edge-id, ring-based stroke opacity using #BADDFF, D3 sets x1/y1/x2/y2 on tick). Zero TS errors, 44 tests passing.
@@ -17,7 +18,7 @@ Phase 2 — Graph Engine
 - [x] P1.1 — Project setup: Next.js 16 scaffolded, all deps installed, tsconfig strict mode verified, vitest.config.ts created, tests/setup.ts and tests/mocks/anthropic.ts created, npm scripts added (type-check/test/test:watch/test:coverage), .github/workflows/ci.yml created, directory structure created. All three checks pass: zero TS errors, "No test files found" (correct), build succeeds.
 
 ## In progress
-- [ ] P2.5 — SearchBar: components/ui/SearchBar.tsx + tests/components/SearchBar.test.tsx + wire into page.tsx
+- [ ] P2.6 — Phase 2 manual verification checklist + final checks
 
 ## Known issues
 None.
