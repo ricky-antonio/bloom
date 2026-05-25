@@ -29,7 +29,7 @@ and the next task. Do not write a single line of code until this confirmation is
 - TypeScript — strict mode (`noImplicitAny`, `strictNullChecks`, `strict: true` in tsconfig)
 - Tailwind CSS
 - D3.js — `d3-force`, `d3-zoom`, `d3-drag` + `@types/d3` — dynamically imported, never at module level
-- `@anthropic-ai/sdk` — model `claude-sonnet-4-20250514`
+- `@anthropic-ai/sdk` — model `claude-sonnet-4-6`
 - `@tabler/icons-react` — icon library (atom icon and others)
 - `react-hot-toast` — toast notifications for AI errors
 - Inter via `next/font/google`
