@@ -280,6 +280,61 @@ describe('recentreGraph', () => {
     const result = recentreGraph(state, 'alpha')
     expect(result.activeNodeId).toBeNull()
   })
+
+  it('recentreGraph where target node is ring2 promotes it to core', () => {
+    const core = createCoreNode('root', 0)
+    const ring1Node: ConceptNode = {
+      id: 'mid',
+      label: 'mid',
+      ring: 'ring1',
+      semanticDistance: 'direct',
+      category: 'awareness',
+      fx: null,
+      fy: null,
+      depth: 1,
+      expanded: false,
+    }
+    const ring2Target: ConceptNode = {
+      id: 'target',
+      label: 'target',
+      ring: 'ring2',
+      semanticDistance: 'adjacent',
+      category: 'identity',
+      fx: null,
+      fy: null,
+      depth: 2,
+      expanded: false,
+    }
+    const ring2Other: ConceptNode = {
+      id: 'other',
+      label: 'other',
+      ring: 'ring2',
+      semanticDistance: 'adjacent',
+      category: 'experiential',
+      fx: null,
+      fy: null,
+      depth: 2,
+      expanded: false,
+    }
+    const edges: ConceptEdge[] = [
+      { id: 'mid--root', source: 'mid', target: 'root', ring: 'ring1' },
+      { id: 'target--mid', source: 'target', target: 'mid', ring: 'ring2' },
+      { id: 'other--mid', source: 'other', target: 'mid', ring: 'ring2' },
+    ]
+    const state = makeEmptyState({
+      nodes: [core, ring1Node, ring2Target, ring2Other],
+      edges,
+      seedConcept: 'root',
+    })
+    const result = recentreGraph(state, 'target')
+    const newCore = result.nodes.find((n) => n.id === 'target')
+    expect(newCore?.ring).toBe('core')
+    expect(newCore?.fx).toBe(0)
+    expect(newCore?.fy).toBe(0)
+    // ring2 nodes that are not the new core should become ring3
+    const otherNode = result.nodes.find((n) => n.id === 'other')
+    expect(otherNode?.ring).toBe('ring3')
+  })
 })
 
 // ─── pruneGraph ───────────────────────────────────────────────────────────────
@@ -328,6 +383,77 @@ describe('pruneGraph', () => {
       expect(remainingIds.has(src)).toBe(true)
       expect(remainingIds.has(tgt)).toBe(true)
     }
+  })
+
+  it('pruneGraph with exactly 40 nodes does not prune any node', () => {
+    const core = createCoreNode('seed', 0)
+    const ring1: ConceptNode[] = Array.from({ length: 6 }, (_, i) => ({
+      id: `r1-${i}`,
+      label: `r1-${i}`,
+      ring: 'ring1' as const,
+      semanticDistance: 'direct' as const,
+      category: 'awareness' as const,
+      fx: null,
+      fy: null,
+      depth: 1,
+      expanded: false,
+    }))
+    const ring2: ConceptNode[] = Array.from({ length: 33 }, (_, i) => ({
+      id: `r2-${i}`,
+      label: `r2-${i}`,
+      ring: 'ring2' as const,
+      semanticDistance: 'adjacent' as const,
+      category: 'awareness' as const,
+      fx: null,
+      fy: null,
+      depth: 2,
+      expanded: false,
+    }))
+    const nodes: ConceptNode[] = [core, ...ring1, ...ring2]
+    expect(nodes.length).toBe(40)
+    const result = pruneGraph(nodes, [])
+    expect(result.nodes).toHaveLength(40)
+  })
+
+  it('pruneGraph with 41 nodes prunes exactly one node', () => {
+    const core = createCoreNode('seed', 0)
+    const ring1: ConceptNode[] = Array.from({ length: 6 }, (_, i) => ({
+      id: `r1-${i}`,
+      label: `r1-${i}`,
+      ring: 'ring1' as const,
+      semanticDistance: 'direct' as const,
+      category: 'awareness' as const,
+      fx: null,
+      fy: null,
+      depth: 1,
+      expanded: false,
+    }))
+    const ring2: ConceptNode[] = Array.from({ length: 33 }, (_, i) => ({
+      id: `r2-${i}`,
+      label: `r2-${i}`,
+      ring: 'ring2' as const,
+      semanticDistance: 'adjacent' as const,
+      category: 'awareness' as const,
+      fx: null,
+      fy: null,
+      depth: 2,
+      expanded: false,
+    }))
+    const ring3Extra: ConceptNode = {
+      id: 'r3-extra',
+      label: 'r3-extra',
+      ring: 'ring3',
+      semanticDistance: 'distant',
+      category: 'awareness',
+      fx: null,
+      fy: null,
+      depth: 3,
+      expanded: false,
+    }
+    const nodes: ConceptNode[] = [core, ...ring1, ...ring2, ring3Extra]
+    expect(nodes.length).toBe(41)
+    const result = pruneGraph(nodes, [])
+    expect(result.nodes).toHaveLength(40)
   })
 })
 

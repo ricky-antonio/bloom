@@ -58,4 +58,39 @@ describe('SearchBar', () => {
     fireEvent.keyDown(input, { key: 'Enter' })
     expect(screen.getByText('Keep it short — one concept at a time')).toBeInTheDocument()
   })
+
+  it('calls onSubmit when input is exactly 100 characters', () => {
+    const onSubmit = vi.fn()
+    render(<SearchBar onSubmit={onSubmit} />)
+    const input = screen.getByRole('textbox')
+    fireEvent.change(input, { target: { value: 'a'.repeat(100) } })
+    fireEvent.keyDown(input, { key: 'Enter' })
+    expect(onSubmit).toHaveBeenCalledWith('a'.repeat(100))
+  })
+
+  it('does not call onSubmit when input is exactly 101 characters', () => {
+    const onSubmit = vi.fn()
+    render(<SearchBar onSubmit={onSubmit} />)
+    const input = screen.getByRole('textbox')
+    fireEvent.change(input, { target: { value: 'a'.repeat(101) } })
+    fireEvent.keyDown(input, { key: 'Enter' })
+    expect(onSubmit).not.toHaveBeenCalled()
+  })
+
+  it('calls onFocusChange with true when input is focused', () => {
+    const onFocusChange = vi.fn()
+    render(<SearchBar onSubmit={vi.fn()} onFocusChange={onFocusChange} />)
+    const input = screen.getByRole('textbox')
+    fireEvent.focus(input)
+    expect(onFocusChange).toHaveBeenCalledWith(true)
+  })
+
+  it('calls onFocusChange with false when input is blurred', () => {
+    const onFocusChange = vi.fn()
+    render(<SearchBar onSubmit={vi.fn()} onFocusChange={onFocusChange} />)
+    const input = screen.getByRole('textbox')
+    fireEvent.focus(input)
+    fireEvent.blur(input)
+    expect(onFocusChange).toHaveBeenCalledWith(false)
+  })
 })

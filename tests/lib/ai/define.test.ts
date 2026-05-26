@@ -42,4 +42,10 @@ describe('parseDefinitionResponse', () => {
     const result = parseDefinitionResponse('{ this is not json }')
     expect(result).toEqual(DEFINITION_FALLBACK)
   })
+
+  it('returns fallback for valid JSON with wrong relatedTags count', () => {
+    const wrongShape = { definition: 'Some definition.', relatedTags: ['a', 'b', 'c'] }
+    const result = parseDefinitionResponse(JSON.stringify(wrongShape))
+    expect(result).toEqual(DEFINITION_FALLBACK)
+  })
 })

@@ -92,4 +92,16 @@ describe('parseExpansionResponse', () => {
     const result = parseExpansionResponse(JSON.stringify(withBadCategory))
     expect(result.ring1[0].category).toBe('awareness')
   })
+
+  it('parseExpansionResponse with partial ring1 (fewer than 6 items) returns fallback', () => {
+    const partial = {
+      ring1: [
+        { label: 'meaning', category: 'awareness', reason: 'Core concept.' },
+        { label: 'context', category: 'awareness', reason: 'Shapes understanding.' },
+      ],
+      ring2: [],
+    }
+    const result = parseExpansionResponse(JSON.stringify(partial))
+    expect(result).toEqual(EXPANSION_FALLBACK)
+  })
 })
