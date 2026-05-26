@@ -61,6 +61,7 @@ export function addExpansionNodes(
       depth,
       expanded: false,
       parentId,
+      definition: item.definition,
     })
   }
 
@@ -72,9 +73,11 @@ export function addExpansionNodes(
     const id = item.label.toLowerCase().trim()
     if (existingIds.has(id)) continue
 
-    const parentRing1 = ring1Nodes.find(
-      (n) => n.label.toLowerCase() === item.parentLabel.toLowerCase()
-    )
+    const parentRing1 =
+      ring1Nodes.find((n) => n.label.toLowerCase() === item.parentLabel.toLowerCase()) ??
+      state.nodes.find(
+        (n) => n.label.toLowerCase() === item.parentLabel.toLowerCase() && n.ring === 'ring1'
+      )
     const ring2ParentId = parentRing1?.id ?? parentId
 
     existingIds.add(id)

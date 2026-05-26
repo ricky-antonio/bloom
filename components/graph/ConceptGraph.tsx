@@ -4,7 +4,7 @@ import React, { useRef, useEffect, useMemo, useCallback, useImperativeHandle, us
 import toast from 'react-hot-toast'
 import { useGraphState } from '@/lib/context/GraphContext'
 import { addExpansionNodes } from '@/lib/graph'
-import { parseExpansionResponse } from '@/lib/ai/expand'
+import { parseRing1Response, parseRing2Response } from '@/lib/ai/expand'
 import { createSimulation } from '@/lib/force'
 import type { ConceptNode, ConceptEdge, GraphState } from '@/lib/types'
 import GraphCanvas from './GraphCanvas'
@@ -46,10 +46,17 @@ const ConceptGraph = React.forwardRef<ConceptGraphHandle, ConceptGraphProps>(
     const nodesRef = useRef<ConceptNode[]>(state.nodes)
     const edgesRef = useRef<ConceptEdge[]>(state.edges)
     const stateRef = useRef<GraphState>(state)
+    // Separate controller for ring2 — must survive the isExpanding→false cleanup
+    const ring2AbortRef = useRef<AbortController | null>(null)
 
     useEffect(() => { nodesRef.current = state.nodes }, [state.nodes])
     useEffect(() => { edgesRef.current = state.edges }, [state.edges])
     useEffect(() => { stateRef.current = state }, [state])
+    // Cancel any in-flight ring2 fetch when a new expansion starts or on unmount
+    useEffect(() => {
+      if (state.isExpanding) ring2AbortRef.current?.abort()
+    }, [state.isExpanding])
+    useEffect(() => () => { ring2AbortRef.current?.abort() }, [])
 
     const tickHandler = useCallback(function tick() {
       const nodes = nodesRef.current
@@ -128,44 +135,71 @@ const ConceptGraph = React.forwardRef<ConceptGraphHandle, ConceptGraphProps>(
 
       async function expand() {
         try {
-          const response = await fetch('/api/expand', {
+          // Phase 1 — ring1 via Haiku (fast, shows graph immediately)
+          const ring1Res = await fetch('/api/expand', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ concept: capturedNode.label, depth: capturedNode.depth }),
+            body: JSON.stringify({ concept: capturedNode.label, depth: capturedNode.depth, phase: 'ring1' }),
             signal: controller.signal,
           })
 
           if (controller.signal.aborted) return
 
-          if (!response.ok) {
+          if (!ring1Res.ok) {
             dispatch({ type: 'SET_EXPANDING', nodeId: null })
             toast.error("Couldn't reach the AI. Try again.")
             return
           }
 
+          const { text: ring1Text } = await ring1Res.json() as { text: string }
           if (controller.signal.aborted) return
 
-          const { text } = await response.json() as { text: string }
+          const ring1Data = parseRing1Response(ring1Text)
 
-          if (controller.signal.aborted) return
-
-          const parsed = parseExpansionResponse(text)
-
-          if (parsed.ring1.length === 0) {
+          if (ring1Data.length === 0) {
             toast("Nothing to expand here.", { icon: '🌱' })
             dispatch({ type: 'SET_EXPANDING', nodeId: null })
             return
           }
 
-          const { nodes: newNodes, edges: newEdges } = addExpansionNodes(
+          const { nodes: ring1Nodes, edges: ring1Edges } = addExpansionNodes(
             stateRef.current,
-            parsed,
+            { ring1: ring1Data, ring2: [] },
             capturedNode.id,
             capturedNode.depth + 1
           )
-
-          dispatch({ type: 'ADD_EXPANSION_NODES', nodes: newNodes, edges: newEdges })
+          dispatch({ type: 'ADD_EXPANSION_NODES', nodes: ring1Nodes, edges: ring1Edges })
           onExpansionComplete?.()
+
+          // Phase 2 — ring2 via Sonnet (background, adds depth nodes silently)
+          // Use a separate controller so ring2 survives isExpanding→false cleanup
+          ring2AbortRef.current?.abort()
+          const ring2Controller = new AbortController()
+          ring2AbortRef.current = ring2Controller
+
+          const ring1Labels = ring1Data.map(n => n.label)
+          const ring2Res = await fetch('/api/expand', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ concept: capturedNode.label, depth: capturedNode.depth, phase: 'ring2', ring1Labels }),
+            signal: ring2Controller.signal,
+          })
+
+          if (ring2Controller.signal.aborted || !ring2Res.ok) return
+
+          const { text: ring2Text } = await ring2Res.json() as { text: string }
+          if (ring2Controller.signal.aborted) return
+
+          const ring2Data = parseRing2Response(ring2Text, ring1Labels)
+          if (ring2Data.length === 0) return
+
+          const { nodes: finalNodes, edges: finalEdges } = addExpansionNodes(
+            stateRef.current,
+            { ring1: ring1Data, ring2: ring2Data },
+            capturedNode.id,
+            capturedNode.depth + 1
+          )
+          dispatch({ type: 'ADD_EXPANSION_NODES', nodes: finalNodes, edges: finalEdges })
         } catch (err) {
           if ((err as Error)?.name === 'AbortError') return
           dispatch({ type: 'SET_EXPANDING', nodeId: null })

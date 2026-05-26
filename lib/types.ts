@@ -52,6 +52,7 @@ export interface ExpansionResponse {
     label: string
     category: Category
     reason: string
+    definition?: string
   }>
   ring2: Array<{
     label: string

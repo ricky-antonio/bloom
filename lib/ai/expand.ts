@@ -32,6 +32,51 @@ Rules:
 - Return pure JSON only — no code fences, no extra keys`
 }
 
+export function buildRing1Prompt(concept: string, depth: number): string {
+  const depthHint =
+    depth === 0
+      ? 'This is the seed concept — choose broadly across different dimensions of human understanding.'
+      : `The user has explored ${depth} level${depth === 1 ? '' : 's'} — go deeper and more specific.`
+
+  return `You are a knowledge graph builder. Expand the concept "${concept}" into 6 direct related concepts.
+
+${depthHint}
+
+Return ONLY valid JSON:
+{
+  "ring1": [
+    { "label": "1–3 word concept", "category": "awareness|identity|experiential", "definition": "One sentence defining this concept in relation to ${concept}." }
+  ]
+}
+
+Rules:
+- Exactly 6 items, labels 1–3 words, lowercase
+- category: "awareness" (how you perceive/think about it), "identity" (how it shapes/defines you), "experiential" (how it feels in lived experience)
+- Aim for 2 items per category
+- definition: 1 sentence, plain prose, no quotes inside the string
+- Return pure JSON only — no code fences, no extra keys`
+}
+
+export function buildRing2Prompt(concept: string, ring1Labels: string[], depth: number): string {
+  return `You are a knowledge graph builder. For the concept "${concept}", expand each related concept into 2 sub-concepts.
+
+Related concepts: ${ring1Labels.join(', ')}
+
+Return ONLY valid JSON:
+{
+  "ring2": [
+    { "label": "1–3 word concept", "parentLabel": "must exactly match one of the related concepts", "category": "awareness|identity|experiential" }
+  ]
+}
+
+Rules:
+- Exactly ${ring1Labels.length * 2} items (2 per related concept)
+- parentLabel must exactly match one of: ${ring1Labels.join(', ')}
+- Labels: 1–3 words, lowercase
+- category: "awareness", "identity", or "experiential"
+- Return pure JSON only — no code fences, no extra keys`
+}
+
 const VALID_CATEGORIES: Category[] = ['awareness', 'identity', 'experiential']
 
 function toCategory(s: string): Category {
@@ -78,4 +123,60 @@ export function parseExpansionResponse(text: string, isRetry = false): Expansion
       category: toCategory(item.category as string),
     })),
   }
+}
+
+export function parseRing1Response(text: string, isRetry = false): ExpansionResponse['ring1'] {
+  const cleaned = text.replace(/```json|```/g, '').trim()
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(cleaned)
+  } catch {
+    if (isRetry) return EXPANSION_FALLBACK.ring1
+    return parseRing1Response(cleaned, true)
+  }
+  if (!parsed || typeof parsed !== 'object') {
+    if (isRetry) return EXPANSION_FALLBACK.ring1
+    return parseRing1Response(cleaned, true)
+  }
+  const obj = parsed as Record<string, unknown>
+  if (!Array.isArray(obj.ring1) || obj.ring1.length < 3) {
+    if (isRetry) return EXPANSION_FALLBACK.ring1
+    return parseRing1Response(cleaned, true)
+  }
+  return (obj.ring1 as any[]) // d3 internal
+    .map((item: any) => ({ // d3 internal
+      label: String(item.label ?? '').toLowerCase().trim(),
+      category: toCategory(String(item.category ?? '')),
+      reason: String(item.reason ?? ''),
+      definition: item.definition ? String(item.definition).trim() : undefined,
+    }))
+    .filter(item => item.label.length > 0)
+}
+
+export function parseRing2Response(text: string, ring1Labels: string[], isRetry = false): ExpansionResponse['ring2'] {
+  const cleaned = text.replace(/```json|```/g, '').trim()
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(cleaned)
+  } catch {
+    if (isRetry) return []
+    return parseRing2Response(cleaned, ring1Labels, true)
+  }
+  if (!parsed || typeof parsed !== 'object') {
+    if (isRetry) return []
+    return parseRing2Response(cleaned, ring1Labels, true)
+  }
+  const obj = parsed as Record<string, unknown>
+  if (!Array.isArray(obj.ring2) || obj.ring2.length < 4) {
+    if (isRetry) return []
+    return parseRing2Response(cleaned, ring1Labels, true)
+  }
+  const labelSet = new Set(ring1Labels.map(l => l.toLowerCase()))
+  return (obj.ring2 as any[]) // d3 internal
+    .map((item: any) => ({ // d3 internal
+      label: String(item.label ?? '').toLowerCase().trim(),
+      parentLabel: String(item.parentLabel ?? '').toLowerCase().trim(),
+      category: toCategory(String(item.category ?? '')),
+    }))
+    .filter(item => item.label.length > 0 && labelSet.has(item.parentLabel))
 }

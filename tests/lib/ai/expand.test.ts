@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildExpansionPrompt, parseExpansionResponse } from '@/lib/ai/expand'
+import { buildExpansionPrompt, parseExpansionResponse, buildRing1Prompt, buildRing2Prompt, parseRing1Response, parseRing2Response } from '@/lib/ai/expand'
 import { EXPANSION_FALLBACK } from '@/lib/types'
 
 const validResponse = {
@@ -103,5 +103,125 @@ describe('parseExpansionResponse', () => {
     }
     const result = parseExpansionResponse(JSON.stringify(partial))
     expect(result).toEqual(EXPANSION_FALLBACK)
+  })
+})
+
+describe('buildRing1Prompt', () => {
+  it('includes the concept name', () => {
+    expect(buildRing1Prompt('love', 0)).toContain('love')
+  })
+
+  it('includes depth hint for seed', () => {
+    expect(buildRing1Prompt('love', 0)).toContain('seed')
+  })
+
+  it('includes depth hint for non-seed', () => {
+    expect(buildRing1Prompt('love', 2)).toContain('2')
+  })
+})
+
+describe('buildRing2Prompt', () => {
+  it('includes the concept name', () => {
+    expect(buildRing2Prompt('love', ['attachment', 'longing'], 0)).toContain('love')
+  })
+
+  it('includes all ring1 labels', () => {
+    const prompt = buildRing2Prompt('love', ['attachment', 'longing'], 0)
+    expect(prompt).toContain('attachment')
+    expect(prompt).toContain('longing')
+  })
+})
+
+describe('parseRing1Response', () => {
+  const validRing1 = {
+    ring1: [
+      { label: 'meaning', category: 'awareness', definition: 'How we assign significance to experience.' },
+      { label: 'context', category: 'awareness', definition: 'The surrounding circumstances that shape understanding.' },
+      { label: 'feeling', category: 'experiential', definition: 'The lived emotional texture of an experience.' },
+      { label: 'identity', category: 'identity', definition: 'How the concept relates to our sense of self.' },
+      { label: 'change', category: 'experiential', definition: 'The process of transformation over time.' },
+      { label: 'connection', category: 'identity', definition: 'Bonds formed with others through shared experience.' },
+    ],
+  }
+
+  it('returns a ring1 array from valid response', () => {
+    const result = parseRing1Response(JSON.stringify(validRing1))
+    expect(result).toHaveLength(6)
+    expect(result[0].label).toBe('meaning')
+  })
+
+  it('handles JSON wrapped in markdown fences', () => {
+    const result = parseRing1Response('```json\n' + JSON.stringify(validRing1) + '\n```')
+    expect(result).toHaveLength(6)
+  })
+
+  it('returns fallback on invalid JSON', () => {
+    const result = parseRing1Response('not json')
+    expect(result).toEqual(EXPANSION_FALLBACK.ring1)
+  })
+
+  it('returns fallback when ring1 has fewer than 3 items', () => {
+    const result = parseRing1Response(JSON.stringify({ ring1: [{ label: 'a', category: 'awareness' }] }))
+    expect(result).toEqual(EXPANSION_FALLBACK.ring1)
+  })
+
+  it('extracts definition field from ring1 items when present', () => {
+    const result = parseRing1Response(JSON.stringify(validRing1))
+    expect(result[0].definition).toBe('How we assign significance to experience.')
+    expect(result[1].definition).toBe('The surrounding circumstances that shape understanding.')
+  })
+
+  it('leaves definition undefined when absent from ring1 items', () => {
+    const noDefinition = {
+      ring1: validRing1.ring1.map(({ definition: _def, ...rest }) => rest),
+    }
+    const result = parseRing1Response(JSON.stringify(noDefinition))
+    expect(result[0].definition).toBeUndefined()
+  })
+})
+
+describe('parseRing2Response', () => {
+  const ring1Labels = ['meaning', 'context', 'feeling', 'identity', 'change', 'connection']
+  const validRing2 = {
+    ring2: [
+      { label: 'interpretation', parentLabel: 'meaning', category: 'awareness' },
+      { label: 'purpose', parentLabel: 'meaning', category: 'awareness' },
+      { label: 'environment', parentLabel: 'context', category: 'awareness' },
+      { label: 'perspective', parentLabel: 'context', category: 'awareness' },
+      { label: 'emotion', parentLabel: 'feeling', category: 'experiential' },
+      { label: 'sensation', parentLabel: 'feeling', category: 'experiential' },
+      { label: 'self', parentLabel: 'identity', category: 'identity' },
+      { label: 'values', parentLabel: 'identity', category: 'identity' },
+      { label: 'growth', parentLabel: 'change', category: 'experiential' },
+      { label: 'transition', parentLabel: 'change', category: 'experiential' },
+      { label: 'relationship', parentLabel: 'connection', category: 'identity' },
+      { label: 'belonging', parentLabel: 'connection', category: 'identity' },
+    ],
+  }
+
+  it('returns a ring2 array from valid response', () => {
+    const result = parseRing2Response(JSON.stringify(validRing2), ring1Labels)
+    expect(result).toHaveLength(12)
+  })
+
+  it('filters out items with invalid parentLabel', () => {
+    const withBadParent = {
+      ring2: [
+        ...validRing2.ring2,
+        { label: 'orphan', parentLabel: 'nonexistent', category: 'awareness' },
+      ],
+    }
+    const result = parseRing2Response(JSON.stringify(withBadParent), ring1Labels)
+    expect(result).toHaveLength(12)
+  })
+
+  it('returns empty array on invalid JSON', () => {
+    const result = parseRing2Response('not json', ring1Labels)
+    expect(result).toEqual([])
+  })
+
+  it('returns empty array when ring2 has fewer than 4 items', () => {
+    const result = parseRing2Response(JSON.stringify({ ring2: [{ label: 'a', parentLabel: 'meaning', category: 'awareness' }] }), ring1Labels)
+    expect(result).toEqual([])
   })
 })

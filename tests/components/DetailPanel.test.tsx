@@ -10,7 +10,9 @@ vi.mock('@/lib/context/GraphContext', () => ({
 }))
 
 vi.mock('@/components/ui/StreamingDefinition', () => ({
-  default: () => <div data-testid="streaming-definition">mock definition</div>,
+  default: ({ preloadedText }: { preloadedText?: string }) => (
+    <div data-testid="streaming-definition">{preloadedText ?? 'mock definition'}</div>
+  ),
 }))
 
 const mockNode: ConceptNode = {
@@ -116,5 +118,21 @@ describe('DetailPanel', () => {
     closeBtn.focus()
     fireEvent.keyDown(window, { key: 'Tab', shiftKey: true })
     expect(document.activeElement).toBe(expandBtn)
+  })
+
+  it('passes pre-loaded definition to StreamingDefinition when node.definition exists', () => {
+    const nodeWithDef: ConceptNode = { ...mockNode, definition: 'A pre-loaded definition text.' }
+    vi.mocked(useGraphState).mockReturnValue({
+      state: { ...mockState, nodes: [nodeWithDef] },
+      dispatch: mockDispatch,
+    })
+    render(<DetailPanel onExpand={mockOnExpand} onAddTag={mockOnAddTag} />)
+    expect(screen.getByTestId('streaming-definition')).toBeInTheDocument()
+    expect(screen.getByText('A pre-loaded definition text.')).toBeInTheDocument()
+  })
+
+  it('renders StreamingDefinition when node has no pre-loaded definition', () => {
+    render(<DetailPanel onExpand={mockOnExpand} onAddTag={mockOnAddTag} />)
+    expect(screen.getByTestId('streaming-definition')).toBeInTheDocument()
   })
 })

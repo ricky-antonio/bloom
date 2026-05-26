@@ -333,6 +333,7 @@ export default function DetailPanel({ onExpand, onAddTag, onDefinitionLoaded }: 
           <StreamingDefinition
             concept={node.label}
             parentConcept={parentLabel || node.label}
+            preloadedText={node.definition}
             onComplete={(def, tags) => onDefinitionLoaded?.(node.id, def, tags)}
           />
         </div>
