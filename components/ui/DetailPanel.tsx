@@ -363,12 +363,21 @@ export default function DetailPanel({ onExpand, onAddTag, onDefinitionLoaded }: 
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
               {node.relatedTags.map((tag, i) => (
-                <ConceptTag
+                <span
                   key={tag}
-                  label={tag}
-                  category={(['awareness', 'identity', 'experiential'] as Category[])[i % 3]}
-                  onClick={label => onAddTag(label, node.id)}
-                />
+                  style={{
+                    display: 'inline-flex',
+                    opacity: 0,
+                    animation: 'tag-appear 220ms ease forwards',
+                    animationDelay: `${i * 55}ms`,
+                  }}
+                >
+                  <ConceptTag
+                    label={tag}
+                    category={(['awareness', 'identity', 'experiential'] as Category[])[i % 3]}
+                    onClick={label => onAddTag(label, node.id)}
+                  />
+                </span>
               ))}
             </div>
           </div>
@@ -424,6 +433,10 @@ export default function DetailPanel({ onExpand, onAddTag, onDefinitionLoaded }: 
         @keyframes slide-in-right {
           from { transform: translateX(240px); opacity: 0; }
           to   { transform: translateX(0);    opacity: 1; }
+        }
+        @keyframes tag-appear {
+          from { opacity: 0; transform: translateY(4px); }
+          to   { opacity: 1; transform: translateY(0);   }
         }
       `}</style>
     </div>
