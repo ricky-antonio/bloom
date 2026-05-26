@@ -9,6 +9,7 @@ import ConceptTag from './ConceptTag'
 interface DetailPanelProps {
   onExpand: (nodeId: string) => void
   onAddTag: (label: string, parentNodeId: string) => void
+  onDefinitionLoaded?: (nodeId: string, definition: string, relatedTags: string[]) => void
 }
 
 /* ─── Category colour palettes ──────────────────────────────────────── */
@@ -84,7 +85,7 @@ function getParentLabel(node: ConceptNode, nodes: ConceptNode[]): string {
   return nodes.find(n => n.id === node.parentId)?.label ?? ''
 }
 
-export default function DetailPanel({ onExpand, onAddTag }: DetailPanelProps) {
+export default function DetailPanel({ onExpand, onAddTag, onDefinitionLoaded }: DetailPanelProps) {
   const { state, dispatch } = useGraphState()
 
   const node: ConceptNode | null = state.activeNodeId
@@ -286,6 +287,7 @@ export default function DetailPanel({ onExpand, onAddTag }: DetailPanelProps) {
           <StreamingDefinition
             concept={node.label}
             parentConcept={parentLabel || node.label}
+            onComplete={(def, tags) => onDefinitionLoaded?.(node.id, def, tags)}
           />
         </div>
 

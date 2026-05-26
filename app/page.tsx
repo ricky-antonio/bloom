@@ -1,7 +1,6 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import { Toaster } from 'react-hot-toast'
 import { GraphProvider, useGraphState } from '@/lib/context/GraphContext'
 import { exportGraph } from '@/lib/graph'
 import ConceptGraph from '@/components/graph/ConceptGraph'
@@ -23,8 +22,14 @@ function HomeContent() {
     : 0
 
   function handleSearch(concept: string) {
+    if (
+      concept.toLowerCase().trim() === state.seedConcept.toLowerCase().trim() &&
+      state.nodes.length > 0
+    ) return
     dispatch({ type: 'CLEAR_GRAPH' })
-    dispatch({ type: 'EXPAND_CONCEPT', concept, depth: 0, nodeId: concept.toLowerCase().trim() })
+    setTimeout(() => {
+      dispatch({ type: 'EXPAND_CONCEPT', concept, nodeId: concept.toLowerCase().trim(), depth: 0 })
+    }, 0)
   }
 
   function handleClearRequest() {
@@ -69,6 +74,10 @@ function HomeContent() {
 
   function handleAddTag(label: string, parentNodeId: string) {
     dispatch({ type: 'ADD_TAG_NODE', label, parentNodeId })
+  }
+
+  function handleDefinitionLoaded(nodeId: string, definition: string, relatedTags: string[]) {
+    dispatch({ type: 'SET_DEFINITION', nodeId, definition, relatedTags })
   }
 
   return (
@@ -149,6 +158,7 @@ function HomeContent() {
       <DetailPanel
         onExpand={handleExpand}
         onAddTag={handleAddTag}
+        onDefinitionLoaded={handleDefinitionLoaded}
       />
 
       {/* Legend */}
@@ -167,7 +177,6 @@ function HomeContent() {
 export default function Home() {
   return (
     <GraphProvider>
-      <Toaster position="top-center" toastOptions={{ duration: 4000 }} />
       <HomeContent />
     </GraphProvider>
   )
