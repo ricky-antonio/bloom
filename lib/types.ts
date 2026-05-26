@@ -45,7 +45,7 @@ export type GraphAction =
   | { type: 'RECENTRE'; nodeId: string }
   | { type: 'CLEAR_GRAPH' }
   | { type: 'SET_EXPANDING'; nodeId: string | null }
-  | { type: 'ADD_TAG_NODE'; label: string; parentNodeId: string }
+  | { type: 'ADD_TAG_NODE'; label: string; parentNodeId: string; category: Category }
 
 export interface ExpansionResponse {
   ring1: Array<{

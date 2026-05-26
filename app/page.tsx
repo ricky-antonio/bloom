@@ -11,6 +11,7 @@ import Toolbar from '@/components/layout/Toolbar'
 import DetailPanel from '@/components/ui/DetailPanel'
 import Legend from '@/components/ui/Legend'
 import ZoomControls from '@/components/ui/ZoomControls'
+import type { Category } from '@/lib/types'
 
 function HomeContent() {
   const { state, dispatch } = useGraphState()
@@ -78,8 +79,8 @@ function HomeContent() {
     dispatch({ type: 'EXPAND_CONCEPT', concept: node.label, depth: node.depth, nodeId })
   }, [state.nodes, dispatch])
 
-  function handleAddTag(label: string, parentNodeId: string) {
-    dispatch({ type: 'ADD_TAG_NODE', label, parentNodeId })
+  function handleAddTag(label: string, parentNodeId: string, category: Category) {
+    dispatch({ type: 'ADD_TAG_NODE', label, parentNodeId, category })
   }
 
   function handleDefinitionLoaded(nodeId: string, definition: string, relatedTags: string[]) {

@@ -74,13 +74,15 @@ function graphReducer(state: GraphState, action: GraphAction): GraphState {
     }
 
     case 'ADD_TAG_NODE': {
+      const newId = action.label.toLowerCase().trim()
+      if (state.nodes.some((n) => n.id === newId)) return state
       const parent = state.nodes.find((n) => n.id === action.parentNodeId)
       const newNode: ConceptNode = {
-        id: action.label.toLowerCase().trim(),
+        id: newId,
         label: action.label,
         ring: 'ring1',
         semanticDistance: 'direct',
-        category: 'awareness',
+        category: action.category,
         depth: (parent?.depth ?? 0) + 1,
         parentId: action.parentNodeId,
         fx: null,

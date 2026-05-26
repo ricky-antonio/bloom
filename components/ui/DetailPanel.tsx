@@ -8,7 +8,7 @@ import ConceptTag from './ConceptTag'
 
 interface DetailPanelProps {
   onExpand: (nodeId: string) => void
-  onAddTag: (label: string, parentNodeId: string) => void
+  onAddTag: (label: string, parentNodeId: string, category: Category) => void
   onDefinitionLoaded?: (nodeId: string, definition: string, relatedTags: string[]) => void
 }
 
@@ -375,7 +375,7 @@ export default function DetailPanel({ onExpand, onAddTag, onDefinitionLoaded }: 
                   <ConceptTag
                     label={tag}
                     category={(['awareness', 'identity', 'experiential'] as Category[])[i % 3]}
-                    onClick={label => onAddTag(label, node.id)}
+                    onClick={label => onAddTag(label, node.id, (['awareness', 'identity', 'experiential'] as Category[])[i % 3])}
                   />
                 </span>
               ))}

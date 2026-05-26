@@ -86,7 +86,7 @@ describe('DetailPanel', () => {
   it('calls onAddTag when a related tag chip is clicked', () => {
     render(<DetailPanel onExpand={mockOnExpand} onAddTag={mockOnAddTag} />)
     fireEvent.click(screen.getByRole('button', { name: 'Explore concept: perception' }))
-    expect(mockOnAddTag).toHaveBeenCalledWith('perception', 'node-1')
+    expect(mockOnAddTag).toHaveBeenCalledWith('perception', 'node-1', 'awareness')
   })
 
   it('renders close button with aria-label "Close detail panel"', () => {
