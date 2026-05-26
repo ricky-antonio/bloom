@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useGraphState } from '@/lib/context/GraphContext'
 import type { ConceptNode, NodeRing, Category } from '@/lib/types'
 import StreamingDefinition from './StreamingDefinition'
@@ -87,17 +87,35 @@ function getParentLabel(node: ConceptNode, nodes: ConceptNode[]): string {
 
 export default function DetailPanel({ onExpand, onAddTag, onDefinitionLoaded }: DetailPanelProps) {
   const { state, dispatch } = useGraphState()
+  const panelRef = useRef<HTMLDivElement>(null)
 
   const node: ConceptNode | null = state.activeNodeId
     ? state.nodes.find(n => n.id === state.activeNodeId) ?? null
     : null
 
-  /* Escape key closes the panel */
+  /* Escape closes the panel; Tab key is trapped within the panel while open */
   useEffect(() => {
     if (!node) return
     function onKeyDown(e: KeyboardEvent) {
       if (e.key === 'Escape') {
         dispatch({ type: 'SELECT_NODE', nodeId: null })
+        return
+      }
+      if (e.key !== 'Tab' || !panelRef.current) return
+      const focusable = Array.from(
+        panelRef.current.querySelectorAll<HTMLElement>(
+          'button, [tabindex]:not([tabindex="-1"]), a[href], input, select, textarea'
+        )
+      ).filter(el => !el.hasAttribute('disabled'))
+      if (focusable.length === 0) return
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
       }
     }
     window.addEventListener('keydown', onKeyDown)
@@ -113,6 +131,7 @@ export default function DetailPanel({ onExpand, onAddTag, onDefinitionLoaded }: 
 
   return (
     <div
+      ref={panelRef}
       role="complementary"
       aria-label="Concept detail"
       style={{
@@ -128,6 +147,33 @@ export default function DetailPanel({ onExpand, onAddTag, onDefinitionLoaded }: 
         zIndex: 200,
       }}
     >
+      {/* Close button — first in tab order so keyboard users can dismiss immediately */}
+      <button
+        onClick={() => dispatch({ type: 'SELECT_NODE', nodeId: null })}
+        aria-label="Close detail panel"
+        style={{
+          position: 'absolute',
+          top: 10,
+          right: 10,
+          width: 22,
+          height: 22,
+          border: 'none',
+          background: 'rgba(73,101,128,0.08)',
+          borderRadius: '50%',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: '#8AABBC',
+          fontSize: 14,
+          lineHeight: 1,
+          zIndex: 210,
+          padding: 0,
+        }}
+      >
+        ×
+      </button>
+
       {/* ─── Hero section ──────────────────────────────────────────────── */}
       <div
         style={{

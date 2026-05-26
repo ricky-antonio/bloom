@@ -88,4 +88,33 @@ describe('DetailPanel', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Explore concept: perception' }))
     expect(mockOnAddTag).toHaveBeenCalledWith('perception', 'node-1')
   })
+
+  it('renders close button with aria-label "Close detail panel"', () => {
+    render(<DetailPanel onExpand={mockOnExpand} onAddTag={mockOnAddTag} />)
+    expect(screen.getByRole('button', { name: 'Close detail panel' })).toBeInTheDocument()
+  })
+
+  it('clicking close button dispatches SELECT_NODE null', () => {
+    render(<DetailPanel onExpand={mockOnExpand} onAddTag={mockOnAddTag} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Close detail panel' }))
+    expect(mockDispatch).toHaveBeenCalledWith({ type: 'SELECT_NODE', nodeId: null })
+  })
+
+  it('traps focus: Tab from last focusable element wraps to close button', () => {
+    render(<DetailPanel onExpand={mockOnExpand} onAddTag={mockOnAddTag} />)
+    const closeBtn = screen.getByRole('button', { name: 'Close detail panel' })
+    const expandBtn = screen.getByRole('button', { name: /Expand concept:/ })
+    expandBtn.focus()
+    fireEvent.keyDown(window, { key: 'Tab' })
+    expect(document.activeElement).toBe(closeBtn)
+  })
+
+  it('traps focus: Shift+Tab from close button wraps to expand button', () => {
+    render(<DetailPanel onExpand={mockOnExpand} onAddTag={mockOnAddTag} />)
+    const closeBtn = screen.getByRole('button', { name: 'Close detail panel' })
+    const expandBtn = screen.getByRole('button', { name: /Expand concept:/ })
+    closeBtn.focus()
+    fireEvent.keyDown(window, { key: 'Tab', shiftKey: true })
+    expect(document.activeElement).toBe(expandBtn)
+  })
 })
