@@ -65,8 +65,11 @@ const GraphCanvas = React.forwardRef<GraphCanvasHandle, GraphCanvasProps>(
           const zoom = zoomBehaviourRef.current
           const d3 = d3Ref.current
           if (!svgEl || !zoom || !d3) return
-          // d3 internal: selection parent type differs from ZoomBehavior generic but is runtime-compatible
-          zoom.scaleBy(d3.select(svgEl) as unknown as D3.Selection<SVGSVGElement, unknown, null, undefined>, 1.5)
+          // d3 internal: transition type is compatible at runtime
+          zoom.scaleBy(
+            d3.select(svgEl).transition().duration(300) as unknown as D3.Selection<SVGSVGElement, unknown, null, undefined>,
+            1.5
+          )
           onZoomIn?.()
         },
         zoomOut: () => {
@@ -74,8 +77,11 @@ const GraphCanvas = React.forwardRef<GraphCanvasHandle, GraphCanvasProps>(
           const zoom = zoomBehaviourRef.current
           const d3 = d3Ref.current
           if (!svgEl || !zoom || !d3) return
-          // d3 internal: selection parent type differs from ZoomBehavior generic but is runtime-compatible
-          zoom.scaleBy(d3.select(svgEl) as unknown as D3.Selection<SVGSVGElement, unknown, null, undefined>, 1 / 1.5)
+          // d3 internal: transition type is compatible at runtime
+          zoom.scaleBy(
+            d3.select(svgEl).transition().duration(300) as unknown as D3.Selection<SVGSVGElement, unknown, null, undefined>,
+            1 / 1.5
+          )
           onZoomOut?.()
         },
         resetZoom: () => {
@@ -83,11 +89,12 @@ const GraphCanvas = React.forwardRef<GraphCanvasHandle, GraphCanvasProps>(
           const zoom = zoomBehaviourRef.current
           const d3 = d3Ref.current
           if (!svgEl || !zoom || !d3) return
-          d3.select(svgEl).call(sel => zoom.transform(
-            // d3 internal: selection parent type differs from ZoomBehavior generic but is runtime-compatible
-            sel as unknown as D3.Selection<SVGSVGElement, unknown, null, undefined>,
-            d3.zoomIdentity
-          ))
+          const { width, height } = svgEl.getBoundingClientRect()
+          zoom.transform(
+            // d3 internal: transition type is compatible at runtime
+            d3.select(svgEl).transition().duration(400) as unknown as D3.Selection<SVGSVGElement, unknown, null, undefined>,
+            d3.zoomIdentity.translate(width / 2, height / 2).scale(0.9)
+          )
           onResetZoom?.()
         },
       }),
