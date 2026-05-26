@@ -1,8 +1,9 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { GraphProvider, useGraphState } from '@/lib/context/GraphContext'
 import { exportGraph } from '@/lib/graph'
+import { useKeyboard } from '@/lib/hooks/useKeyboard'
 import ConceptGraph from '@/components/graph/ConceptGraph'
 import type { ConceptGraphHandle } from '@/components/graph/ConceptGraph'
 import SearchBar from '@/components/ui/SearchBar'
@@ -15,6 +16,7 @@ function HomeContent() {
   const { state, dispatch } = useGraphState()
   const graphRef = useRef<ConceptGraphHandle>(null)
   const [isConfirmingClear, setIsConfirmingClear] = useState(false)
+  const [isSearchFocused, setIsSearchFocused] = useState(false)
   const clearTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const depth = state.nodes.length > 0
@@ -32,10 +34,10 @@ function HomeContent() {
     }, 0)
   }
 
-  function handleClearRequest() {
+  const handleClearRequest = useCallback(() => {
     setIsConfirmingClear(true)
     clearTimerRef.current = setTimeout(() => setIsConfirmingClear(false), 4000)
-  }
+  }, [])
 
   function handleConfirmClear() {
     if (clearTimerRef.current) clearTimeout(clearTimerRef.current)
@@ -64,13 +66,13 @@ function HomeContent() {
     input?.focus()
   }
 
-  function handleExpand(nodeId: string) {
+  const handleExpand = useCallback((nodeId: string) => {
     const node = state.nodes.find(n => n.id === nodeId)
     if (!node) return
     dispatch({ type: 'SELECT_NODE', nodeId: null })
     dispatch({ type: 'RECENTRE', nodeId })
     dispatch({ type: 'EXPAND_CONCEPT', concept: node.label, depth: node.depth, nodeId })
-  }
+  }, [state.nodes, dispatch])
 
   function handleAddTag(label: string, parentNodeId: string) {
     dispatch({ type: 'ADD_TAG_NODE', label, parentNodeId })
@@ -79,6 +81,31 @@ function HomeContent() {
   function handleDefinitionLoaded(nodeId: string, definition: string, relatedTags: string[]) {
     dispatch({ type: 'SET_DEFINITION', nodeId, definition, relatedTags })
   }
+
+  const handleEscape = useCallback(() => {
+    dispatch({ type: 'SELECT_NODE', nodeId: null })
+    ;(document.activeElement as HTMLElement | null)?.blur()
+  }, [dispatch])
+
+  const handleSpace = useCallback(() => {
+    graphRef.current?.resetZoom()
+  }, [])
+
+  const handleNavigate = useCallback((nodeId: string) => {
+    dispatch({ type: 'SELECT_NODE', nodeId })
+  }, [dispatch])
+
+  useKeyboard({
+    activeNodeId: state.activeNodeId,
+    isSearchFocused,
+    nodes: state.nodes,
+    edges: state.edges,
+    onEscape: handleEscape,
+    onSpace: handleSpace,
+    onClearGraph: handleClearRequest,
+    onExpandNode: handleExpand,
+    onNavigate: handleNavigate,
+  })
 
   return (
     <div
@@ -137,7 +164,11 @@ function HomeContent() {
           zIndex: 50,
         }}
       >
-        <SearchBar onSubmit={handleSearch} disabled={state.isExpanding} />
+        <SearchBar
+          onSubmit={handleSearch}
+          disabled={state.isExpanding}
+          onFocusChange={setIsSearchFocused}
+        />
       </div>
 
       {/* Graph canvas */}

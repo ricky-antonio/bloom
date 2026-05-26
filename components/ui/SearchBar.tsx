@@ -6,9 +6,10 @@ import { IconAtom, IconSparkles } from '@tabler/icons-react'
 interface SearchBarProps {
   onSubmit: (concept: string) => void
   disabled?: boolean
+  onFocusChange?: (focused: boolean) => void
 }
 
-export default function SearchBar({ onSubmit, disabled }: SearchBarProps) {
+export default function SearchBar({ onSubmit, disabled, onFocusChange }: SearchBarProps) {
   const [value, setValue] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [focused, setFocused] = useState(false)
@@ -55,8 +56,8 @@ export default function SearchBar({ onSubmit, disabled }: SearchBarProps) {
             if (error) setError(null)
           }}
           onKeyDown={(e) => { if (e.key === 'Enter') handleSubmit() }}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
+          onFocus={() => { setFocused(true); onFocusChange?.(true) }}
+          onBlur={() => { setFocused(false); onFocusChange?.(false) }}
           placeholder="Enter any concept to explore…"
           aria-label="Enter a concept to explore"
           disabled={disabled}
