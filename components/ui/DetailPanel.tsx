@@ -267,11 +267,10 @@ export default function DetailPanel({ onExpand, onAddTag, onDefinitionLoaded }: 
         <div
           style={{
             fontFamily: 'var(--font-display), "Playfair Display", serif',
-            fontStyle: 'italic',
-            fontSize: 34,
-            fontWeight: 800,
-            letterSpacing: '-0.03em',
-            lineHeight: 0.95,
+            fontSize: 30,
+            fontWeight: 700,
+            letterSpacing: '-0.01em',
+            lineHeight: 1.15,
             color: CONCEPT_COLOUR[cat],
             position: 'relative',
             zIndex: 1,
