@@ -17,15 +17,15 @@ export default function EmptyState({ onSubmit }: EmptyStateProps) {
         alignItems: 'center',
         justifyContent: 'center',
         pointerEvents: 'none',
-        gap: 12,
+        gap: 16,
       }}
     >
       {/* Animated background pulse */}
       <div
         style={{
           position: 'absolute',
-          width: 400,
-          height: 400,
+          width: 500,
+          height: 500,
           borderRadius: '50%',
           background: 'radial-gradient(circle, rgba(255,219,187,1) 0%, transparent 70%)',
           animation: 'pulse-bg 6s ease-in-out infinite',
@@ -38,7 +38,7 @@ export default function EmptyState({ onSubmit }: EmptyStateProps) {
         style={{
           fontFamily: 'var(--font-display), "Playfair Display", serif',
           fontStyle: 'italic',
-          fontSize: 48,
+          fontSize: 72,
           fontWeight: 800,
           color: '#FFDBBB',
           lineHeight: 1,
@@ -52,7 +52,7 @@ export default function EmptyState({ onSubmit }: EmptyStateProps) {
       <p
         style={{
           fontFamily: 'var(--font-sans), Inter, sans-serif',
-          fontSize: 16,
+          fontSize: 20,
           color: '#8AABBC',
           margin: 0,
           position: 'relative',
@@ -65,7 +65,7 @@ export default function EmptyState({ onSubmit }: EmptyStateProps) {
       <p
         style={{
           fontFamily: 'var(--font-sans), Inter, sans-serif',
-          fontSize: 13,
+          fontSize: 15,
           color: '#BACCDA',
           margin: 0,
           position: 'relative',
@@ -78,7 +78,7 @@ export default function EmptyState({ onSubmit }: EmptyStateProps) {
       <div
         style={{
           display: 'flex',
-          gap: 8,
+          gap: 10,
           pointerEvents: 'all',
           position: 'relative',
           marginTop: 4,
@@ -90,12 +90,12 @@ export default function EmptyState({ onSubmit }: EmptyStateProps) {
             onClick={() => onSubmit(concept)}
             aria-label={`Explore concept: ${concept}`}
             style={{
-              padding: '5px 12px',
-              borderRadius: 10,
-              border: '0.5px solid rgba(73,101,128,0.12)',
-              background: 'rgba(73,101,128,0.04)',
+              padding: '7px 18px',
+              borderRadius: 14,
+              border: '0.5px solid rgba(73,101,128,0.15)',
+              background: 'rgba(73,101,128,0.05)',
               color: '#6A8AA0',
-              fontSize: 11,
+              fontSize: 13,
               fontWeight: 500,
               fontFamily: 'var(--font-sans), Inter, sans-serif',
               cursor: 'pointer',
@@ -114,38 +114,38 @@ export default function EmptyState({ onSubmit }: EmptyStateProps) {
       <div
         style={{
           display: 'flex',
-          gap: 24,
+          gap: 32,
           position: 'relative',
-          marginTop: 20,
+          marginTop: 24,
         }}
       >
         {([
-          { color: '#BADDFF', name: 'awareness',    desc: 'how you perceive it' },
-          { color: '#FFDBBB', name: 'identity',     desc: 'how it shapes you' },
-          { color: '#BAFFF5', name: 'experiential', desc: 'how it feels' },
-        ] as const).map(({ color, name, desc }) => (
+          { dot: '#BADDFF', text: '#3D6E8C', name: 'awareness',    desc: 'how you perceive it' },
+          { dot: '#FFDBBB', text: '#9E5830', name: 'identity',     desc: 'how it shapes you' },
+          { dot: '#BAFFF5', text: '#2A8070', name: 'experiential', desc: 'how it feels' },
+        ] as const).map(({ dot, text, name, desc }) => (
           <div
             key={name}
             style={{
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              gap: 4,
+              gap: 5,
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <div style={{
-                width: 6,
-                height: 6,
+                width: 8,
+                height: 8,
                 borderRadius: '50%',
-                background: color,
+                background: dot,
                 flexShrink: 0,
               }} />
               <span style={{
                 fontFamily: 'var(--font-sans), Inter, sans-serif',
-                fontSize: 10,
-                fontWeight: 600,
-                color,
+                fontSize: 12,
+                fontWeight: 700,
+                color: text,
                 letterSpacing: '0.06em',
                 textTransform: 'uppercase',
               }}>
@@ -154,9 +154,8 @@ export default function EmptyState({ onSubmit }: EmptyStateProps) {
             </div>
             <span style={{
               fontFamily: 'var(--font-sans), Inter, sans-serif',
-              fontSize: 10,
-              color: '#8AABBC',
-              opacity: 0.7,
+              fontSize: 12,
+              color: '#7A9AAA',
             }}>
               {desc}
             </span>

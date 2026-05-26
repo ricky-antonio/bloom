@@ -15,23 +15,23 @@ export default function NodeTooltip({ node, x, y }: NodeTooltipProps) {
     <div
       style={{
         position: 'fixed',
-        left: x + 12,
-        top: y + 12,
+        left: x + 14,
+        top: y + 14,
         background: '#FFFFFF',
-        border: '1px solid rgba(73,101,128,0.1)',
-        borderRadius: 8,
-        padding: '4px 10px',
+        border: '1px solid rgba(73,101,128,0.12)',
+        borderRadius: 10,
+        padding: '6px 13px',
         pointerEvents: 'none',
-        boxShadow: '0 2px 8px rgba(73,101,128,0.1)',
+        boxShadow: '0 4px 16px rgba(73,101,128,0.12)',
         zIndex: 150,
-        maxWidth: 120,
+        maxWidth: 140,
       }}
     >
       <p
         style={{
           margin: 0,
           fontFamily: 'var(--font-sans), Inter, sans-serif',
-          fontSize: 10,
+          fontSize: 12,
           fontWeight: 600,
           color: '#496580',
           lineHeight: 1.4,
@@ -44,7 +44,7 @@ export default function NodeTooltip({ node, x, y }: NodeTooltipProps) {
         style={{
           margin: 0,
           fontFamily: 'var(--font-sans), Inter, sans-serif',
-          fontSize: 9,
+          fontSize: 11,
           color: '#8AABBC',
           lineHeight: 1.4,
         }}

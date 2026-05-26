@@ -1,19 +1,19 @@
 import type { ConceptNode, ConceptEdge, NodeRing, Category } from './types'
 
 // Sector targets match ring1 link distance so cluster force and link force agree on position
-const CLUSTER_X: Record<Category, number> = { awareness: -120, identity: 120, experiential: 0 }
-const CLUSTER_Y: Record<Category, number> = { awareness: 0,    identity: 0,   experiential: 120 }
+const CLUSTER_X: Record<Category, number> = { awareness: -160, identity: 160, experiential: 0 }
+const CLUSTER_Y: Record<Category, number> = { awareness: 0,    identity: 0,   experiential: 160 }
 
 export function getLinkDistance(ring: NodeRing): number {
-  return { core: 0, ring1: 120, ring2: 130, ring3: 200 }[ring]
+  return { core: 0, ring1: 160, ring2: 170, ring3: 260 }[ring]
 }
 
 export function getChargeStrength(ring: NodeRing): number {
-  return { core: -500, ring1: -180, ring2: -80, ring3: -40 }[ring]
+  return { core: -500, ring1: -220, ring2: -100, ring3: -50 }[ring]
 }
 
 export function getCollisionRadius(ring: NodeRing): number {
-  return { core: 50, ring1: 38, ring2: 28, ring3: 20 }[ring]
+  return { core: 50, ring1: 42, ring2: 32, ring3: 22 }[ring]
 }
 
 // d3 is injected by the caller via dynamic import — never imported at module level

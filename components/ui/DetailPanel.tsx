@@ -136,10 +136,10 @@ export default function DetailPanel({ onExpand, onAddTag, onDefinitionLoaded }: 
       aria-label="Concept detail"
       style={{
         position: 'fixed',
-        right: 14,
-        top: 56,
-        width: 216,
-        borderRadius: 22,
+        right: 16,
+        top: 68,
+        width: 268,
+        borderRadius: 24,
         overflow: 'hidden',
         boxShadow: '0 16px 48px rgba(73,101,128,0.13), 0 4px 12px rgba(73,101,128,0.07), 0 1px 2px rgba(73,101,128,0.04)',
         border: '0.5px solid rgba(255,255,255,0.92)',
@@ -178,7 +178,7 @@ export default function DetailPanel({ onExpand, onAddTag, onDefinitionLoaded }: 
       <div
         style={{
           background: HERO_GRADIENT[cat],
-          padding: '20px 18px 16px',
+          padding: '24px 22px 20px',
           position: 'relative',
           overflow: 'hidden',
         }}
@@ -251,7 +251,7 @@ export default function DetailPanel({ onExpand, onAddTag, onDefinitionLoaded }: 
           <span
             style={{
               fontFamily: 'var(--font-sans), Inter, sans-serif',
-              fontSize: 8.5,
+              fontSize: 10,
               fontWeight: 600,
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
@@ -268,7 +268,7 @@ export default function DetailPanel({ onExpand, onAddTag, onDefinitionLoaded }: 
           style={{
             fontFamily: 'var(--font-display), "Playfair Display", serif',
             fontStyle: 'italic',
-            fontSize: 28,
+            fontSize: 34,
             fontWeight: 800,
             letterSpacing: '-0.03em',
             lineHeight: 0.95,
@@ -298,11 +298,11 @@ export default function DetailPanel({ onExpand, onAddTag, onDefinitionLoaded }: 
           <span
             style={{
               fontFamily: 'var(--font-sans), Inter, sans-serif',
-              fontSize: 7.5,
+              fontSize: 9,
               fontWeight: 600,
               letterSpacing: '0.1em',
               textTransform: 'uppercase',
-              color: 'rgba(73,101,128,0.25)',
+              color: 'rgba(73,101,128,0.3)',
               marginLeft: 4,
             }}
           >
@@ -315,14 +315,14 @@ export default function DetailPanel({ onExpand, onAddTag, onDefinitionLoaded }: 
       <div
         style={{
           background: '#ffffff',
-          padding: '14px 17px 16px',
+          padding: '18px 22px 20px',
         }}
       >
         {/* Definition */}
         <div
           style={{
             fontFamily: 'var(--font-sans), Inter, sans-serif',
-            fontSize: 10.5,
+            fontSize: 13,
             fontWeight: 400,
             color: '#7A92A8',
             lineHeight: 1.72,
@@ -352,11 +352,11 @@ export default function DetailPanel({ onExpand, onAddTag, onDefinitionLoaded }: 
             <div
               style={{
                 fontFamily: 'var(--font-sans), Inter, sans-serif',
-                fontSize: 7.5,
+                fontSize: 9,
                 fontWeight: 700,
                 letterSpacing: '0.14em',
                 textTransform: 'uppercase',
-                color: '#C8D8E4',
+                color: '#AABCCC',
                 marginBottom: 6,
               }}
             >
@@ -384,7 +384,7 @@ export default function DetailPanel({ onExpand, onAddTag, onDefinitionLoaded }: 
             border: 'none',
             borderRadius: 13,
             padding: '11px 14px',
-            fontSize: 11,
+            fontSize: 13,
             fontWeight: 600,
             fontFamily: 'var(--font-sans), Inter, sans-serif',
             letterSpacing: '0.01em',

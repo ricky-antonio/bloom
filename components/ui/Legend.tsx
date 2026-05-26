@@ -1,9 +1,9 @@
 'use client'
 
 const ITEMS = [
-  { colour: '#BADDFF', label: 'Awareness' },
-  { colour: '#FFDBBB', label: 'Identity' },
-  { colour: '#BAFFF5', label: 'Experiential' },
+  { dot: '#BADDFF', text: '#3D6E8C', label: 'Awareness' },
+  { dot: '#FFDBBB', text: '#9E5830', label: 'Identity' },
+  { dot: '#BAFFF5', text: '#2A8070', label: 'Experiential' },
 ]
 
 export default function Legend() {
@@ -12,37 +12,44 @@ export default function Legend() {
       aria-label="Graph legend"
       style={{
         position: 'absolute',
-        bottom: 13,
-        left: 16,
+        bottom: 16,
+        left: 18,
         zIndex: 5,
         display: 'flex',
-        gap: 12,
+        gap: 14,
         pointerEvents: 'none',
+        background: 'rgba(255,255,255,0.7)',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
+        border: '0.5px solid rgba(73,101,128,0.1)',
+        borderRadius: 12,
+        padding: '7px 14px',
       }}
     >
-      {ITEMS.map(({ colour, label }) => (
+      {ITEMS.map(({ dot, text, label }) => (
         <div
           key={label}
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: 5,
+            gap: 6,
           }}
         >
           <div
             style={{
-              width: 7,
-              height: 7,
+              width: 8,
+              height: 8,
               borderRadius: '50%',
-              background: colour,
+              background: dot,
               flexShrink: 0,
             }}
           />
           <span
             style={{
               fontFamily: 'var(--font-sans), Inter, sans-serif',
-              fontSize: 9,
-              color: '#C4D2DC',
+              fontSize: 12,
+              fontWeight: 500,
+              color: text,
               lineHeight: 1,
             }}
           >

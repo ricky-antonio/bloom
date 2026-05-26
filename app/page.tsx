@@ -162,7 +162,7 @@ function HomeContent() {
       <div
         style={{
           position: 'fixed',
-          top: 64,
+          top: 68,
           left: '50%',
           transform: 'translateX(-50%)',
           zIndex: 50,
@@ -179,7 +179,7 @@ function HomeContent() {
       <div
         style={{
           position: 'absolute',
-          top: 48,
+          top: 56,
           left: 0,
           right: 0,
           bottom: 0,

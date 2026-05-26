@@ -9,16 +9,16 @@ interface ZoomControlsProps {
 }
 
 const BTN_STYLE: React.CSSProperties = {
-  width: 32,
-  height: 32,
+  width: 38,
+  height: 38,
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  border: '0.5px solid rgba(73,101,128,0.1)',
-  background: 'rgba(255,255,255,0.7)',
-  backdropFilter: 'blur(6px)',
-  WebkitBackdropFilter: 'blur(6px)',
-  borderRadius: 10,
+  border: '0.5px solid rgba(73,101,128,0.12)',
+  background: 'rgba(255,255,255,0.75)',
+  backdropFilter: 'blur(8px)',
+  WebkitBackdropFilter: 'blur(8px)',
+  borderRadius: 12,
   cursor: 'pointer',
   color: '#8AABBC',
   transition: 'background 150ms',
@@ -29,40 +29,40 @@ export default function ZoomControls({ onZoomIn, onZoomOut, onReset }: ZoomContr
     <div
       style={{
         position: 'absolute',
-        bottom: 13,
-        right: 14,
+        bottom: 16,
+        right: 18,
         zIndex: 5,
         display: 'flex',
         flexDirection: 'column',
-        gap: 6,
+        gap: 7,
       }}
     >
       <button
         onClick={onZoomIn}
         aria-label="Zoom in"
         style={BTN_STYLE}
-        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.9)' }}
-        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.7)' }}
+        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.95)' }}
+        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.75)' }}
       >
-        <IconPlus size={14} aria-hidden />
+        <IconPlus size={16} aria-hidden />
       </button>
       <button
         onClick={onZoomOut}
         aria-label="Zoom out"
         style={BTN_STYLE}
-        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.9)' }}
-        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.7)' }}
+        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.95)' }}
+        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.75)' }}
       >
-        <IconMinus size={14} aria-hidden />
+        <IconMinus size={16} aria-hidden />
       </button>
       <button
         onClick={onReset}
         aria-label="Reset zoom"
         style={BTN_STYLE}
-        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.9)' }}
-        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.7)' }}
+        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.95)' }}
+        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.75)' }}
       >
-        <IconFocusCentered size={14} aria-hidden />
+        <IconFocusCentered size={16} aria-hidden />
       </button>
     </div>
   )

@@ -38,17 +38,19 @@ export default function SearchBar({ onSubmit, disabled, onFocusChange }: SearchB
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: 8,
-          width: 320,
-          height: 42,
+          gap: 10,
+          width: 400,
+          height: 50,
           background: '#FFFFFF',
-          border: `1px solid ${focused ? 'rgba(73,101,128,0.30)' : 'rgba(73,101,128,0.15)'}`,
-          borderRadius: 22,
-          padding: '0 12px',
+          border: `1px solid ${focused ? 'rgba(73,101,128,0.35)' : 'rgba(73,101,128,0.18)'}`,
+          borderRadius: 28,
+          padding: '0 16px',
           boxSizing: 'border-box',
+          boxShadow: focused ? '0 4px 20px rgba(73,101,128,0.08)' : '0 2px 8px rgba(73,101,128,0.05)',
+          transition: 'border-color 150ms, box-shadow 150ms',
         }}
       >
-        <IconAtom size={18} color="#BADDFF" aria-hidden />
+        <IconAtom size={20} color="#BADDFF" aria-hidden />
         <input
           value={value}
           onChange={(e) => {
@@ -66,7 +68,7 @@ export default function SearchBar({ onSubmit, disabled, onFocusChange }: SearchB
             border: 'none',
             outline: 'none',
             background: 'transparent',
-            fontSize: 13,
+            fontSize: 15,
             color: '#496580',
             fontFamily: 'inherit',
           }}
@@ -84,11 +86,11 @@ export default function SearchBar({ onSubmit, disabled, onFocusChange }: SearchB
             alignItems: 'center',
           }}
         >
-          <IconSparkles size={18} color="#BADDFF" />
+          <IconSparkles size={20} color="#BADDFF" />
         </button>
       </div>
       {error && (
-        <p style={{ marginTop: 4, fontSize: 11, color: '#BACCDA', margin: '4px 0 0' }}>
+        <p style={{ marginTop: 6, fontSize: 12, color: '#BACCDA', margin: '6px 0 0' }}>
           {error}
         </p>
       )}

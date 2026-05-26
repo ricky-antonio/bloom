@@ -14,51 +14,65 @@ export default function LoadingBloom() {
     <div
       aria-live="polite"
       aria-label="Generating concept map"
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: 16,
-      }}
+      style={{ position: 'relative', width: 0, height: 0 }}
     >
-      <svg
-        width="64"
-        height="64"
-        viewBox="-32 -32 64 64"
-        style={{ animation: 'spin 3s linear infinite' }}
-        aria-hidden
-      >
-        {petals.map(({ colour, rotate, delay }) => (
-          <g key={rotate} transform={`rotate(${rotate})`}>
-            <ellipse
-              cx={0}
-              cy={-14}
-              rx={8}
-              ry={13}
-              fill={colour}
-              opacity={0.85}
-              style={{
-                transformBox: 'fill-box',
-                transformOrigin: 'center',
-                animation: `pulse 1.2s ease-in-out ${delay} infinite alternate`,
-              }}
-            />
-          </g>
-        ))}
-        {/* Centre dot */}
-        <circle cx={0} cy={0} r={4} fill="rgba(73,101,128,0.15)" />
-      </svg>
+      {/* Spinner — above the core node */}
+      <div style={{
+        position: 'absolute',
+        left: '50%',
+        bottom: 72,
+        transform: 'translateX(-50%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+        <svg
+          width="80"
+          height="80"
+          viewBox="-32 -32 64 64"
+          style={{ animation: 'spin 3s linear infinite' }}
+          aria-hidden
+        >
+          {petals.map(({ colour, rotate, delay }) => (
+            <g key={rotate} transform={`rotate(${rotate})`}>
+              <ellipse
+                cx={0}
+                cy={-14}
+                rx={8}
+                ry={13}
+                fill={colour}
+                opacity={0.85}
+                style={{
+                  transformBox: 'fill-box',
+                  transformOrigin: 'center',
+                  animation: `pulse 1.2s ease-in-out ${delay} infinite alternate`,
+                }}
+              />
+            </g>
+          ))}
+          <circle cx={0} cy={0} r={4} fill="rgba(73,101,128,0.15)" />
+        </svg>
+      </div>
 
-      <p
-        style={{
-          fontFamily: 'var(--font-sans), Inter, sans-serif',
-          fontSize: 12,
-          color: '#BACCDA',
-          margin: 0,
-        }}
-      >
-        Growing your idea…
-      </p>
+      {/* Label — below the core node */}
+      <div style={{
+        position: 'absolute',
+        left: '50%',
+        top: 100,
+        transform: 'translateX(-50%)',
+        whiteSpace: 'nowrap',
+      }}>
+        <p
+          style={{
+            fontFamily: 'var(--font-sans), Inter, sans-serif',
+            fontSize: 14,
+            color: '#BACCDA',
+            margin: 0,
+          }}
+        >
+          Growing your idea…
+        </p>
+      </div>
     </div>
   )
 }
