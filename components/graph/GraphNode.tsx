@@ -81,6 +81,8 @@ export default function GraphNode({ node, isSelected, isExpanding, onSelect, onD
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
+        transformBox: 'fill-box',
+        transformOrigin: 'center',
         transform: hovered ? 'scale(1.08)' : 'scale(1)',
         transition: 'transform 150ms ease',
         cursor: 'pointer',
@@ -101,7 +103,7 @@ export default function GraphNode({ node, isSelected, isExpanding, onSelect, onD
         stroke={colours.border}
         strokeWidth={RING_STROKE_WIDTH[node.ring]}
         filter={isSelected ? `url(#${filterId})` : undefined}
-        style={isExpanding ? { animation: 'pulse 800ms ease-in-out infinite alternate' } : undefined}
+        style={isExpanding ? { transformBox: 'fill-box', transformOrigin: 'center', animation: 'pulse 800ms ease-in-out infinite alternate' } : undefined}
       />
 
       <text
@@ -155,6 +157,7 @@ export default function GraphNode({ node, isSelected, isExpanding, onSelect, onD
           strokeWidth={1.5}
           strokeDasharray={`${circumference * 0.3} ${circumference * 0.7}`}
           style={{
+            transformBox: 'fill-box',
             transformOrigin: 'center',
             animation: 'spin 1s linear infinite',
           }}

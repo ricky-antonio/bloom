@@ -62,6 +62,12 @@ export default function ConceptGraph() {
     void import('d3').then(d3 => {
       if (cancelled) return
       d3Ref.current = d3
+      // Rare case: nodes arrived before d3 finished loading (e.g. SSR hydration)
+      if (nodesRef.current.length > 0 && !simulationRef.current) {
+        const sim = createSimulation(d3, nodesRef.current, edgesRef.current)
+        simulationRef.current = sim
+        sim.on('tick', tickHandler)
+      }
     })
 
     return () => {
@@ -71,9 +77,7 @@ export default function ConceptGraph() {
     }
   }, [tickHandler])
 
-  // Effect 2 — Recompute layout when graph structure changes (nodes/edges added or removed).
-  // Runs the simulation synchronously to completion so nodes render at their final positions
-  // immediately — no visible fly-in animation.
+  // Effect 2 — Restart simulation when graph structure changes (nodes/edges added or removed)
   useEffect(() => {
     const d3 = d3Ref.current
     if (!d3 || nodesRef.current.length === 0) return
@@ -82,16 +86,12 @@ export default function ConceptGraph() {
     if (sim) {
       sim.nodes(nodesRef.current)
       sim.force('link')?.links(edgesRef.current)
-      sim.alpha(0.4)
+      sim.alpha(0.4).restart()
     } else {
       sim = createSimulation(d3, nodesRef.current, edgesRef.current)
       simulationRef.current = sim
+      sim.on('tick', tickHandler)
     }
-
-    // Tick to completion synchronously, then paint once at settled positions
-    sim.stop()
-    while (sim.alpha() > sim.alphaMin()) sim.tick()
-    tickHandler()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.nodes.length, state.edges.length, tickHandler])
 
