@@ -6,6 +6,8 @@ A session-only concept-mapping tool that turns any word into a living, force-dir
 
 > Stack: Next.js 15 · TypeScript · D3.js · Anthropic Claude
 
+**Live:** [bloom.rickycodes.dev](https://bloom.rickycodes.dev/)
+
 ---
 
 ## Overview
