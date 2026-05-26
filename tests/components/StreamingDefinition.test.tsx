@@ -91,38 +91,6 @@ describe('StreamingDefinition', () => {
     expect(abortFn).toHaveBeenCalled()
   })
 
-  it('does not call fetch when preloadedText is provided', () => {
-    render(<StreamingDefinition concept="x" parentConcept="y" preloadedText="Pre-loaded text here." />)
-    expect(fetch).not.toHaveBeenCalled()
-  })
-
-  it('shows cursor initially with preloadedText before animation starts', () => {
-    render(<StreamingDefinition concept="x" parentConcept="y" preloadedText="Hello world." />)
-    expect(document.querySelector('[aria-hidden="true"]')).toBeInTheDocument()
-  })
-
-  it('text is empty before 1.5s delay elapses with preloadedText', async () => {
-    render(<StreamingDefinition concept="x" parentConcept="y" preloadedText="Hello world." />)
-    await act(async () => { vi.advanceTimersByTime(1000) })
-    const text = document.querySelector('span')?.textContent?.replace('|', '').trim() ?? ''
-    expect(text).toBe('')
-  })
-
-  it('animates character by character after 1.5s delay with preloadedText', async () => {
-    render(<StreamingDefinition concept="x" parentConcept="y" preloadedText="Hello world." />)
-    // Advance past delay + 3 character ticks
-    await act(async () => { vi.advanceTimersByTime(1500 + 18 * 3) })
-    const text = document.querySelector('span')?.textContent?.replace('|', '') ?? ''
-    expect(text).toBe('Hel')
-  })
-
-  it('removes cursor when preloadedText animation completes', async () => {
-    render(<StreamingDefinition concept="x" parentConcept="y" preloadedText="Hi." />)
-    // 3 chars need 3 ticks to set text + 1 final tick to setDone
-    await act(async () => { vi.advanceTimersByTime(1500 + 18 * 4 + 10) })
-    expect(document.querySelector('[aria-hidden="true"]')).toBeNull()
-  })
-
   it('shows fallback text on fetch failure', async () => {
     vi.mocked(fetch).mockRejectedValue(new Error('Network error'))
 
