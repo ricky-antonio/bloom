@@ -8,11 +8,10 @@ interface ToolbarProps {
   depth: number
   onSave: () => void
   onExport: () => void
-  onNewConcept: () => void
-  isConfirmingClear: boolean
-  onConfirmClear: () => void
-  onCancelClear: () => void
-  onClearRequest?: () => void
+  isConfirmingNewConcept: boolean
+  onNewConceptRequest: () => void
+  onConfirmNewConcept: () => void
+  onCancelNewConcept: () => void
 }
 
 const secondaryBtn: React.CSSProperties = {
@@ -48,11 +47,10 @@ export default function Toolbar({
   depth,
   onSave,
   onExport,
-  onNewConcept,
-  isConfirmingClear,
-  onConfirmClear,
-  onCancelClear,
-  onClearRequest,
+  isConfirmingNewConcept,
+  onNewConceptRequest,
+  onConfirmNewConcept,
+  onCancelNewConcept,
 }: ToolbarProps) {
   return (
     <div
@@ -144,11 +142,11 @@ export default function Toolbar({
 
       {/* Right — action buttons */}
       <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexShrink: 0 }}>
-        {isConfirmingClear ? (
+        {isConfirmingNewConcept ? (
           <>
             <button
-              onClick={onConfirmClear}
-              aria-label="Confirm clear graph"
+              onClick={onConfirmNewConcept}
+              aria-label="Confirm new concept"
               style={{
                 border: '0.5px solid rgba(192,64,64,0.3)',
                 background: 'rgba(255,220,220,0.5)',
@@ -161,11 +159,11 @@ export default function Toolbar({
                 whiteSpace: 'nowrap',
               }}
             >
-              Confirm clear?
+              Clear map?
             </button>
             <button
-              onClick={onCancelClear}
-              aria-label="Cancel clear"
+              onClick={onCancelNewConcept}
+              aria-label="Cancel new concept"
               style={secondaryBtn}
             >
               Cancel
@@ -173,11 +171,6 @@ export default function Toolbar({
           </>
         ) : (
           <>
-            {nodeCount > 0 && onClearRequest && (
-              <button onClick={onClearRequest} aria-label="Clear graph" style={secondaryBtn}>
-                Clear
-              </button>
-            )}
             {nodeCount > 0 && (
               <button onClick={onSave} aria-label="Save map" style={secondaryBtn}>
                 Save map
@@ -188,7 +181,11 @@ export default function Toolbar({
                 Export
               </button>
             )}
-            <button onClick={onNewConcept} aria-label="New concept" style={accentBtn}>
+            <button
+              onClick={nodeCount > 0 ? onNewConceptRequest : onConfirmNewConcept}
+              aria-label="New concept"
+              style={accentBtn}
+            >
               + New concept
             </button>
           </>

@@ -39,18 +39,21 @@ function HomeContent() {
     }, 0)
   }
 
-  const handleClearRequest = useCallback(() => {
+  function handleNewConceptRequest() {
     setIsConfirmingClear(true)
     clearTimerRef.current = setTimeout(() => setIsConfirmingClear(false), 4000)
-  }, [])
+  }
 
-  function handleConfirmClear() {
+  function handleConfirmNewConcept() {
     if (clearTimerRef.current) clearTimeout(clearTimerRef.current)
     dispatch({ type: 'CLEAR_GRAPH' })
     setIsConfirmingClear(false)
+    setTimeout(() => {
+      document.querySelector<HTMLInputElement>('[aria-label="Enter a concept to explore"]')?.focus()
+    }, 0)
   }
 
-  function handleCancelClear() {
+  function handleCancelNewConcept() {
     if (clearTimerRef.current) clearTimeout(clearTimerRef.current)
     setIsConfirmingClear(false)
   }
@@ -66,10 +69,6 @@ function HomeContent() {
     URL.revokeObjectURL(url)
   }
 
-  function handleNewConcept() {
-    const input = document.querySelector<HTMLInputElement>('[aria-label="Enter a concept to explore"]')
-    input?.focus()
-  }
 
   const handleExpand = useCallback((nodeId: string) => {
     const node = state.nodes.find(n => n.id === nodeId)
@@ -107,7 +106,7 @@ function HomeContent() {
     edges: state.edges,
     onEscape: handleEscape,
     onSpace: handleSpace,
-    onClearGraph: handleClearRequest,
+    onClearGraph: handleNewConceptRequest,
     onExpandNode: handleExpand,
     onNavigate: handleNavigate,
   })
@@ -152,11 +151,10 @@ function HomeContent() {
         depth={depth}
         onSave={handleExport}
         onExport={handleExport}
-        onNewConcept={handleNewConcept}
-        isConfirmingClear={isConfirmingClear}
-        onConfirmClear={handleConfirmClear}
-        onCancelClear={handleCancelClear}
-        onClearRequest={handleClearRequest}
+        isConfirmingNewConcept={isConfirmingClear}
+        onNewConceptRequest={handleNewConceptRequest}
+        onConfirmNewConcept={handleConfirmNewConcept}
+        onCancelNewConcept={handleCancelNewConcept}
       />
 
       {/* Search input — centred, below toolbar */}
