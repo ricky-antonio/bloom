@@ -58,6 +58,13 @@ body {
   }
 }
 
+/* ─── Core float animation (very subtle) ─────────────────────────────── */
+
+@keyframes float-core {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-3px); }
+}
+
 /* ─── Ring 1 float animations (8 unique variants) ────────────────────── */
 
 @keyframes float-1 {

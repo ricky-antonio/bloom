@@ -79,10 +79,12 @@ export default function GraphNode({ node, isSelected, isExpanding, onSelect, onD
 
   /* Animation selection */
   let animationStyle: string | undefined
-  if (node.ring === 'ring1') {
+  if (node.ring === 'core') {
+    animationStyle = 'float-core 5.5s ease-in-out 0s infinite'
+  } else if (node.ring === 'ring1') {
     const cfg = FLOAT_CONFIGS[stableIndex(node.id, FLOAT_CONFIGS.length)]
     animationStyle = `${cfg.name} ${cfg.duration} ease-in-out ${cfg.delay} infinite`
-  } else if (node.ring === 'ring2') {
+  } else if (node.ring === 'ring2' || node.ring === 'ring3') {
     const cfg = DRIFT_CONFIGS[stableIndex(node.id, DRIFT_CONFIGS.length)]
     animationStyle = `${cfg.name} ${cfg.duration} ease-in-out ${cfg.delay} infinite`
   }
