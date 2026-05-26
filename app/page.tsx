@@ -24,10 +24,14 @@ function HomeContent() {
     : 0
 
   function handleSearch(concept: string) {
-    if (
-      concept.toLowerCase().trim() === state.seedConcept.toLowerCase().trim() &&
-      state.nodes.length > 0
-    ) return
+    if (state.nodes.some(n => n.ring === 'core' && n.label.toLowerCase() === concept.toLowerCase())) {
+      const coreNode = state.nodes.find(n => n.ring === 'core')
+      if (coreNode) {
+        dispatch({ type: 'SELECT_NODE', nodeId: coreNode.id })
+        setTimeout(() => dispatch({ type: 'SELECT_NODE', nodeId: null }), 600)
+      }
+      return
+    }
     dispatch({ type: 'CLEAR_GRAPH' })
     setTimeout(() => {
       dispatch({ type: 'EXPAND_CONCEPT', concept, nodeId: concept.toLowerCase().trim(), depth: 0 })
@@ -182,7 +186,11 @@ function HomeContent() {
           zIndex: 1,
         }}
       >
-        <ConceptGraph ref={graphRef} onConceptSubmit={handleSearch} />
+        <ConceptGraph
+          ref={graphRef}
+          onConceptSubmit={handleSearch}
+          onExpansionComplete={() => { setTimeout(() => graphRef.current?.resetZoom(), 600) }}
+        />
       </div>
 
       {/* Detail panel (fixed right) */}

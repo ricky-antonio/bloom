@@ -23,10 +23,11 @@ export interface ConceptGraphHandle {
 
 interface ConceptGraphProps {
   onConceptSubmit?: (concept: string) => void
+  onExpansionComplete?: () => void
 }
 
 const ConceptGraph = React.forwardRef<ConceptGraphHandle, ConceptGraphProps>(
-  function ConceptGraph({ onConceptSubmit }, ref) {
+  function ConceptGraph({ onConceptSubmit, onExpansionComplete }, ref) {
     const { state, dispatch } = useGraphState()
 
     const canvasRef = useRef<GraphCanvasHandle>(null)
@@ -149,6 +150,13 @@ const ConceptGraph = React.forwardRef<ConceptGraphHandle, ConceptGraphProps>(
           if (controller.signal.aborted) return
 
           const parsed = parseExpansionResponse(text)
+
+          if (parsed.ring1.length === 0) {
+            toast("Nothing to expand here.", { icon: '🌱' })
+            dispatch({ type: 'SET_EXPANDING', nodeId: null })
+            return
+          }
+
           const { nodes: newNodes, edges: newEdges } = addExpansionNodes(
             stateRef.current,
             parsed,
@@ -157,6 +165,7 @@ const ConceptGraph = React.forwardRef<ConceptGraphHandle, ConceptGraphProps>(
           )
 
           dispatch({ type: 'ADD_EXPANSION_NODES', nodes: newNodes, edges: newEdges })
+          onExpansionComplete?.()
         } catch (err) {
           if ((err as Error)?.name === 'AbortError') return
           dispatch({ type: 'SET_EXPANDING', nodeId: null })
