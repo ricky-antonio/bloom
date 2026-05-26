@@ -1,7 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  --bg:        #F7F4F0;
+  --font-display: var(--font-playfair);
+  --font-sans: var(--font-inter);
+
+  --bg:        #FDF8F2;
   --surface:   #FFFFFF;
   --surface-2: #F0EDE8;
   --border:    rgba(73,101,128,0.10);
@@ -21,10 +24,12 @@
 }
 
 body {
-  background: var(--bg);
+  background: linear-gradient(135deg, #FDF8F2 0%, #F5F0E8 45%, #F0EEF5 100%);
   color: var(--tx-1);
-  font-family: Inter, Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Inter, Arial, Helvetica, sans-serif;
 }
+
+/* ─── Core animations ────────────────────────────────────────────────── */
 
 @keyframes spin {
   to { transform: rotate(360deg); }
@@ -39,6 +44,88 @@ body {
   0%,  100% { transform: translateX(0); }
   20%, 60%  { transform: translateX(-6px); }
   40%, 80%  { transform: translateX(6px); }
+}
+
+/* Core node pulsing glow */
+@keyframes pulse-core {
+  0%, 100% {
+    filter: drop-shadow(0 6px 14px rgba(186,221,255,0.4))
+            drop-shadow(0 2px 4px rgba(73,101,128,0.08));
+  }
+  50% {
+    filter: drop-shadow(0 8px 18px rgba(186,221,255,0.6))
+            drop-shadow(0 3px 6px rgba(73,101,128,0.1));
+  }
+}
+
+/* ─── Ring 1 float animations (8 unique variants) ────────────────────── */
+
+@keyframes float-1 {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-5px); }
+}
+
+@keyframes float-2 {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-4px); }
+}
+
+@keyframes float-3 {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-6px); }
+}
+
+@keyframes float-4 {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-4.5px); }
+}
+
+@keyframes float-5 {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-5.5px); }
+}
+
+@keyframes float-6 {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-4px); }
+}
+
+@keyframes float-7 {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-6px); }
+}
+
+@keyframes float-8 {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-5px); }
+}
+
+/* ─── Ring 2 drift animations (3 variants) ───────────────────────────── */
+
+@keyframes drift-1 {
+  0%,  100% { transform: translate(0px, 0px); }
+  25%       { transform: translate(1.5px, -1px); }
+  50%       { transform: translate(0px, 1.5px); }
+  75%       { transform: translate(-1.5px, 0px); }
+}
+
+@keyframes drift-2 {
+  0%,  100% { transform: translate(0px, 0px); }
+  25%       { transform: translate(-1px, 1px); }
+  50%       { transform: translate(1px, -1.5px); }
+  75%       { transform: translate(0.5px, 0.5px); }
+}
+
+@keyframes drift-3 {
+  0%,  100% { transform: translate(0px, 0px); }
+  33%       { transform: translate(1px, 1px); }
+  66%       { transform: translate(-1px, -0.5px); }
+}
+
+/* Empty state background pulse */
+@keyframes pulse-bg {
+  0%, 100% { opacity: 0.04; }
+  50%       { opacity: 0.07; }
 }
 
 .search-shake {

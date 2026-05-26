@@ -22,6 +22,9 @@ Phase 3 — UI & Interaction
 ## In progress
 <!-- none -->
 
+## Visual redesign session (Phase 3)
+- [x] Premium constellation UI redesign: Playfair Display + Inter fonts installed; three-stop diagonal gradient background + three ambient colour washes; Toolbar component (logo, active concept pill, node count badge, clear confirmation, export); GraphNode redesigned (core 76px with pulse-core glow animation + ghost ring, ring1 60px with per-node float animation + glow halo, ring2 38px with drift animation); GraphEdge updated (category-coloured opacity-based strokes per ring); GraphCanvas SVG defs (node glow radial gradients); ConceptGraph forwardRef for zoom, passes sourceCategory to edges; StreamingDefinition, ConceptTag, DetailPanel (hero section with category gradient + decorative circles + ring badge + concept word + depth pips, body with definition + tags + expand button + slide-in animation); Legend; EmptyState (Playfair Display wordmark + tagline + animated radial pulse + example pills); LoadingBloom (four-petal SVG bloom with spin + staggered petal pulse); ZoomControls. Zero TS errors. 59 tests pass. 92.89% line coverage. Build succeeds.
+
 ## Known issues
 None.
 

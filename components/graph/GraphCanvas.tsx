@@ -45,7 +45,6 @@ const GraphCanvas = React.forwardRef<GraphCanvasHandle, GraphCanvasProps>(
         zoomBehaviourRef.current = zoom
         d3.select(svgEl).call(zoom)
 
-        // Centre and zoom so the graph fills the canvas comfortably at first load
         const { width, height } = svgEl.getBoundingClientRect()
         if (width > 0 && height > 0) {
           d3.select(svgEl).call(
@@ -55,9 +54,7 @@ const GraphCanvas = React.forwardRef<GraphCanvasHandle, GraphCanvasProps>(
         }
       })
 
-      return () => {
-        cancelled = true
-      }
+      return () => { cancelled = true }
     }, [])
 
     useImperativeHandle(
@@ -104,6 +101,22 @@ const GraphCanvas = React.forwardRef<GraphCanvasHandle, GraphCanvasProps>(
         height="100%"
         style={{ background: 'transparent' }}
       >
+        <defs>
+          {/* Node glow fills (objectBoundingBox — fill each glow circle correctly) */}
+          <radialGradient id="node-glow-sky" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#BADDFF" stopOpacity={0.35} />
+            <stop offset="100%" stopColor="#BADDFF" stopOpacity={0} />
+          </radialGradient>
+          <radialGradient id="node-glow-peach" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#FFDBBB" stopOpacity={0.4} />
+            <stop offset="100%" stopColor="#FFDBBB" stopOpacity={0} />
+          </radialGradient>
+          <radialGradient id="node-glow-mint" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#BAFFF5" stopOpacity={0.35} />
+            <stop offset="100%" stopColor="#BAFFF5" stopOpacity={0} />
+          </radialGradient>
+        </defs>
+
         <g ref={gDomRef} style={{ pointerEvents: 'none' }}>
           {children}
         </g>
