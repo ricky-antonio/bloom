@@ -10,6 +10,8 @@ interface GraphNodeProps {
   isExpanding: boolean
   onSelect: (nodeId: string) => void
   onDeselect?: () => void
+  onHover?: (node: ConceptNode, x: number, y: number) => void
+  onHoverEnd?: () => void
 }
 
 const RING_RADIUS: Record<NodeRing, number> = {
@@ -64,7 +66,7 @@ function stableIndex(id: string, max: number): number {
   return h % max
 }
 
-export default function GraphNode({ node, isSelected, isExpanding, onSelect, onDeselect }: GraphNodeProps) {
+export default function GraphNode({ node, isSelected, isExpanding, onSelect, onDeselect, onHover, onHoverEnd }: GraphNodeProps) {
   const [hovered, setHovered] = useState(false)
 
   const colours = getNodeColour(node.ring, node.category)
@@ -117,8 +119,9 @@ export default function GraphNode({ node, isSelected, isExpanding, onSelect, onD
           aria-pressed={isSelected}
           onClick={handleClick}
           onKeyDown={handleKeyDown}
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
+          onMouseEnter={(e) => { setHovered(true); onHover?.(node, e.clientX, e.clientY) }}
+          onMouseMove={(e) => { onHover?.(node, e.clientX, e.clientY) }}
+          onMouseLeave={() => { setHovered(false); onHoverEnd?.() }}
           style={{
             transformBox: 'fill-box',
             transformOrigin: 'center',

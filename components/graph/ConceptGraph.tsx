@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useRef, useEffect, useMemo, useCallback, useImperativeHandle } from 'react'
+import React, { useRef, useEffect, useMemo, useCallback, useImperativeHandle, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useGraphState } from '@/lib/context/GraphContext'
 import { addExpansionNodes } from '@/lib/graph'
@@ -13,6 +13,7 @@ import GraphNode from './GraphNode'
 import GraphEdge from './GraphEdge'
 import EmptyState from '@/components/ui/EmptyState'
 import LoadingBloom from '@/components/ui/LoadingBloom'
+import NodeTooltip from '@/components/ui/NodeTooltip'
 
 export interface ConceptGraphHandle {
   zoomIn: () => void
@@ -178,6 +179,14 @@ const ConceptGraph = React.forwardRef<ConceptGraphHandle, ConceptGraphProps>(
       [dispatch]
     )
 
+    const [tooltip, setTooltip] = useState<{ node: ConceptNode; x: number; y: number } | null>(null)
+
+    const handleHover = useCallback(
+      (node: ConceptNode, x: number, y: number) => { setTooltip({ node, x, y }) },
+      []
+    )
+    const handleHoverEnd = useCallback(() => { setTooltip(null) }, [])
+
     const nodeComponents = useMemo(
       () =>
         state.nodes.map(node => (
@@ -188,9 +197,11 @@ const ConceptGraph = React.forwardRef<ConceptGraphHandle, ConceptGraphProps>(
             isExpanding={state.isExpanding && state.expansionNodeId === node.id}
             onSelect={handleSelect}
             onDeselect={handleDeselect}
+            onHover={handleHover}
+            onHoverEnd={handleHoverEnd}
           />
         )),
-      [state.nodes, state.activeNodeId, state.isExpanding, state.expansionNodeId, handleSelect, handleDeselect]
+      [state.nodes, state.activeNodeId, state.isExpanding, state.expansionNodeId, handleSelect, handleDeselect, handleHover, handleHoverEnd]
     )
 
     const edgeComponents = useMemo(
@@ -246,6 +257,11 @@ const ConceptGraph = React.forwardRef<ConceptGraphHandle, ConceptGraphProps>(
           <g className="edges">{edgeComponents}</g>
           <g className="nodes">{nodeComponents}</g>
         </GraphCanvas>
+        <NodeTooltip
+          node={tooltip?.node ?? null}
+          x={tooltip?.x ?? 0}
+          y={tooltip?.y ?? 0}
+        />
       </div>
     )
   }
