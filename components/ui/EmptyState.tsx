@@ -109,6 +109,60 @@ export default function EmptyState({ onSubmit }: EmptyStateProps) {
           </button>
         ))}
       </div>
+
+      {/* Category key */}
+      <div
+        style={{
+          display: 'flex',
+          gap: 24,
+          position: 'relative',
+          marginTop: 20,
+        }}
+      >
+        {([
+          { color: '#BADDFF', name: 'awareness',    desc: 'how you perceive it' },
+          { color: '#FFDBBB', name: 'identity',     desc: 'how it shapes you' },
+          { color: '#BAFFF5', name: 'experiential', desc: 'how it feels' },
+        ] as const).map(({ color, name, desc }) => (
+          <div
+            key={name}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 4,
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+              <div style={{
+                width: 6,
+                height: 6,
+                borderRadius: '50%',
+                background: color,
+                flexShrink: 0,
+              }} />
+              <span style={{
+                fontFamily: 'var(--font-sans), Inter, sans-serif',
+                fontSize: 10,
+                fontWeight: 600,
+                color,
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+              }}>
+                {name}
+              </span>
+            </div>
+            <span style={{
+              fontFamily: 'var(--font-sans), Inter, sans-serif',
+              fontSize: 10,
+              color: '#8AABBC',
+              opacity: 0.7,
+            }}>
+              {desc}
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

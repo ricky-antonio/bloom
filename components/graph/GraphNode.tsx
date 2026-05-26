@@ -186,7 +186,7 @@ export default function GraphNode({ node, isSelected, isExpanding, onSelect, onD
                 style={{
                   fontFamily: 'var(--font-display), "Playfair Display", serif',
                   fontStyle: 'italic',
-                  fontSize: 13,
+                  fontSize: 14,
                   fontWeight: 800,
                   fill: '#496580',
                   pointerEvents: 'none',
@@ -201,7 +201,7 @@ export default function GraphNode({ node, isSelected, isExpanding, onSelect, onD
                 y={radius + 14}
                 style={{
                   fontFamily: 'var(--font-sans), Inter, sans-serif',
-                  fontSize: 7,
+                  fontSize: 8,
                   fontWeight: 600,
                   letterSpacing: '0.14em',
                   textTransform: 'uppercase',
@@ -224,7 +224,7 @@ export default function GraphNode({ node, isSelected, isExpanding, onSelect, onD
                 style={{
                   fontFamily: 'var(--font-display), "Playfair Display", serif',
                   fontStyle: 'italic',
-                  fontSize: 10,
+                  fontSize: 11,
                   fontWeight: 700,
                   fill: colours.text,
                   pointerEvents: 'none',
@@ -238,7 +238,7 @@ export default function GraphNode({ node, isSelected, isExpanding, onSelect, onD
                 y={radius + 12}
                 style={{
                   fontFamily: 'var(--font-sans), Inter, sans-serif',
-                  fontSize: 9,
+                  fontSize: 10,
                   fontWeight: 500,
                   fill: colours.text,
                   fillOpacity: 0.65,
@@ -259,7 +259,7 @@ export default function GraphNode({ node, isSelected, isExpanding, onSelect, onD
                 dy="0.1em"
                 style={{
                   fontFamily: 'var(--font-sans), Inter, sans-serif',
-                  fontSize: 8,
+                  fontSize: 9,
                   fontWeight: 500,
                   fill: colours.text,
                   pointerEvents: 'none',
@@ -273,7 +273,7 @@ export default function GraphNode({ node, isSelected, isExpanding, onSelect, onD
                 y={radius + 11}
                 style={{
                   fontFamily: 'var(--font-sans), Inter, sans-serif',
-                  fontSize: 8,
+                  fontSize: 9,
                   fill: '#C8D8E4',
                   pointerEvents: 'none',
                   userSelect: 'none',
@@ -291,7 +291,7 @@ export default function GraphNode({ node, isSelected, isExpanding, onSelect, onD
               dy="0.35em"
               style={{
                 fontFamily: 'var(--font-sans), Inter, sans-serif',
-                fontSize: 8,
+                fontSize: 9,
                 fontWeight: 400,
                 fill: '#C8D8E4',
                 pointerEvents: 'none',

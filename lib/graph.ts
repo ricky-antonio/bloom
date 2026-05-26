@@ -4,7 +4,15 @@ import type {
   GraphState,
   ExpansionResponse,
   NodeRing,
+  Category,
 } from './types'
+
+// Seed angle per category — matches cluster force targets in lib/force.ts
+const CATEGORY_SEED_ANGLE: Record<Category, number> = {
+  awareness:    Math.PI,       // left
+  identity:     0,             // right
+  experiential: Math.PI / 2,   // down
+}
 
 export function createCoreNode(concept: string, depth: number): ConceptNode {
   return {
@@ -29,12 +37,17 @@ export function addExpansionNodes(
   const existingIds = new Set(state.nodes.map((n) => n.id))
 
   const ring1Nodes: ConceptNode[] = []
-  for (const [i, item] of expansion.ring1.entries()) {
+  const categoryCount = new Map<Category, number>()
+  for (const item of expansion.ring1) {
     const id = item.label.toLowerCase().trim()
     if (existingIds.has(id)) continue
     existingIds.add(id)
-    // Seed close to center so force simulation radiates them outward on first render
-    const angle = (i / expansion.ring1.length) * 2 * Math.PI
+    // Seed near the category's target sector so the cluster force settles quickly
+    const baseAngle = CATEGORY_SEED_ANGLE[item.category]
+    const nth = categoryCount.get(item.category) ?? 0
+    categoryCount.set(item.category, nth + 1)
+    const spread = (nth - 0.5) * 0.5  // alternate ±0.25 rad around base angle
+    const angle = baseAngle + spread
     ring1Nodes.push({
       id,
       label: item.label.trim(),
@@ -43,8 +56,8 @@ export function addExpansionNodes(
       category: item.category,
       fx: null,
       fy: null,
-      x: Math.cos(angle) * 15,
-      y: Math.sin(angle) * 15,
+      x: Math.cos(angle) * 30,
+      y: Math.sin(angle) * 30,
       depth,
       expanded: false,
       parentId,

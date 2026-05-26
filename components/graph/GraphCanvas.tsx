@@ -49,7 +49,7 @@ const GraphCanvas = React.forwardRef<GraphCanvasHandle, GraphCanvasProps>(
         if (width > 0 && height > 0) {
           d3.select(svgEl).call(
             zoom.transform,
-            d3.zoomIdentity.translate(width / 2, height / 2).scale(0.9)
+            d3.zoomIdentity.translate(width / 2, height / 2).scale(1.4)
           )
         }
       })
@@ -93,7 +93,7 @@ const GraphCanvas = React.forwardRef<GraphCanvasHandle, GraphCanvasProps>(
           zoom.transform(
             // d3 internal: transition type is compatible at runtime
             d3.select(svgEl).transition().duration(400) as unknown as D3.Selection<SVGSVGElement, unknown, null, undefined>,
-            d3.zoomIdentity.translate(width / 2, height / 2).scale(0.9)
+            d3.zoomIdentity.translate(width / 2, height / 2).scale(1.4)
           )
           onResetZoom?.()
         },
