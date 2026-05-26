@@ -29,21 +29,21 @@ export default function LoadingBloom() {
         aria-hidden
       >
         {petals.map(({ colour, rotate, delay }) => (
-          <ellipse
-            key={rotate}
-            cx={0}
-            cy={-14}
-            rx={8}
-            ry={13}
-            fill={colour}
-            transform={`rotate(${rotate})`}
-            opacity={0.85}
-            style={{
-              transformBox: 'fill-box',
-              transformOrigin: 'center',
-              animation: `pulse 1.2s ease-in-out ${delay} infinite alternate`,
-            }}
-          />
+          <g key={rotate} transform={`rotate(${rotate})`}>
+            <ellipse
+              cx={0}
+              cy={-14}
+              rx={8}
+              ry={13}
+              fill={colour}
+              opacity={0.85}
+              style={{
+                transformBox: 'fill-box',
+                transformOrigin: 'center',
+                animation: `pulse 1.2s ease-in-out ${delay} infinite alternate`,
+              }}
+            />
+          </g>
         ))}
         {/* Centre dot */}
         <circle cx={0} cy={0} r={4} fill="rgba(73,101,128,0.15)" />
