@@ -72,7 +72,6 @@ export default function GraphNode({ node, isSelected, isExpanding, onSelect, onD
   const colours = getNodeColour(node.ring, node.category)
   const radius = RING_RADIUS[node.ring]
   const glowR = GLOW_RADIUS[node.ring]
-  const filterId = `glow-${node.id}`
 
   const spinnerRadius = radius + 8
   const circumference = 2 * Math.PI * spinnerRadius
@@ -89,7 +88,11 @@ export default function GraphNode({ node, isSelected, isExpanding, onSelect, onD
     animationStyle = `${cfg.name} ${cfg.duration} ease-in-out ${cfg.delay} infinite`
   }
 
-  /* Core pulsing glow (applied to main circle) */
+  /* CSS drop-shadow filters — no SVG filter ID references needed */
+  const selectedFilter = isSelected
+    ? `drop-shadow(0 0 ${radius * 1.5}px ${colours.border}) drop-shadow(0 0 ${radius * 0.7}px ${colours.border}) drop-shadow(0 0 ${radius * 0.3}px ${colours.border})`
+    : undefined
+
   const coreFilter = node.ring === 'core'
     ? 'drop-shadow(0 6px 14px rgba(186,221,255,0.4)) drop-shadow(0 2px 4px rgba(73,101,128,0.08))'
     : undefined
@@ -104,9 +107,10 @@ export default function GraphNode({ node, isSelected, isExpanding, onSelect, onD
     }
   }
 
-  /* Scale for hover — ring2 uses 1.1, others 1.08 */
-  const hoverScale = node.ring === 'ring2' ? 1.1 : 1.08
-  const scaleValue = hovered ? hoverScale : 1
+  /* Scale: selected > hover > idle */
+  const hoverScale    = node.ring === 'ring2' ? 1.10 : 1.08
+  const selectedScale = node.ring === 'ring2' ? 1.20 : 1.16
+  const scaleValue = isSelected ? selectedScale : hovered ? hoverScale : 1
 
   return (
     <g data-node-id={node.id}>
@@ -131,16 +135,9 @@ export default function GraphNode({ node, isSelected, isExpanding, onSelect, onD
             transition: 'transform 150ms ease',
             cursor: 'pointer',
             pointerEvents: 'all',
+            outline: 'none',
           }}
         >
-          {/* Drop-shadow filter for selected state */}
-          {isSelected && (
-            <defs>
-              <filter id={filterId} x="-50%" y="-50%" width="200%" height="200%">
-                <feDropShadow dx="0" dy="0" stdDeviation="10" floodColor={colours.border} floodOpacity="0.6" />
-              </filter>
-            </defs>
-          )}
 
           {/* Ambient glow halo (core + ring1 only) */}
           {glowR !== undefined && (
@@ -170,9 +167,8 @@ export default function GraphNode({ node, isSelected, isExpanding, onSelect, onD
             stroke={colours.border}
             strokeWidth={RING_STROKE_WIDTH[node.ring]}
             strokeDasharray={node.ring === 'ring3' ? '4 3' : undefined}
-            filter={isSelected ? `url(#${filterId})` : undefined}
             style={{
-              filter: isSelected ? undefined : coreFilter,
+              filter: selectedFilter ?? coreFilter,
               animation: node.ring === 'core' ? 'pulse-core 3s ease-in-out infinite' : undefined,
               ...(isExpanding
                 ? { transformBox: 'fill-box', transformOrigin: 'center', animation: 'pulse 800ms ease-in-out infinite alternate' }
