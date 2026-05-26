@@ -62,6 +62,7 @@ export function addExpansionNodes(
       expanded: false,
       parentId,
       definition: item.definition,
+      definitionPreloaded: item.definition ? true : undefined,
     })
   }
 

@@ -15,6 +15,7 @@ export interface ConceptNode {
   fx?: number | null
   fy?: number | null
   definition?: string
+  definitionPreloaded?: true
   relatedTags?: string[]
   expanded?: boolean
   parentId?: string
