@@ -111,15 +111,15 @@ const GraphCanvas = React.forwardRef<GraphCanvasHandle, GraphCanvasProps>(
         <defs>
           {/* Node glow fills (objectBoundingBox — fill each glow circle correctly) */}
           <radialGradient id="node-glow-sky" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#BADDFF" stopOpacity={0.35} />
+            <stop offset="0%" stopColor="#BADDFF" stopOpacity={0.6} />
             <stop offset="100%" stopColor="#BADDFF" stopOpacity={0} />
           </radialGradient>
           <radialGradient id="node-glow-peach" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#FFDBBB" stopOpacity={0.4} />
+            <stop offset="0%" stopColor="#FFDBBB" stopOpacity={0.65} />
             <stop offset="100%" stopColor="#FFDBBB" stopOpacity={0} />
           </radialGradient>
           <radialGradient id="node-glow-mint" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#BAFFF5" stopOpacity={0.35} />
+            <stop offset="0%" stopColor="#BAFFF5" stopOpacity={0.6} />
             <stop offset="100%" stopColor="#BAFFF5" stopOpacity={0} />
           </radialGradient>
         </defs>

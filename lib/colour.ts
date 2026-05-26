@@ -1,21 +1,21 @@
 import type { NodeRing, Category } from './types'
 
 export const CATEGORY_COLOURS: Record<Category, { border: string; text: string }> = {
-  awareness: { border: '#BADDFF', text: '#5A8AAA' },
-  identity: { border: '#FFDBBB', text: '#C07040' },
-  experiential: { border: '#BAFFF5', text: '#40A090' },
+  awareness:    { border: '#BADDFF', text: '#3D6E8C' },
+  identity:     { border: '#FFDBBB', text: '#9E5830' },
+  experiential: { border: '#BAFFF5', text: '#2A8070' },
 }
 
 const RING2_BORDERS: Record<Category, string> = {
-  awareness: 'rgba(186, 221, 255, 0.4)',
-  identity: 'rgba(255, 219, 187, 0.4)',
-  experiential: 'rgba(186, 255, 245, 0.4)',
+  awareness:    '#BADDFF',
+  identity:     '#FFDBBB',
+  experiential: '#BAFFF5',
 }
 
 const RING2_TEXT: Record<Category, string> = {
-  awareness: '#AACCDC',
-  identity: '#E0A880',
-  experiential: '#80C8B8',
+  awareness:    '#3D6E8C',
+  identity:     '#9E5830',
+  experiential: '#2A8070',
 }
 
 export function getNodeColour(
@@ -36,12 +36,14 @@ export function getNodeColour(
     return {
       border: RING2_BORDERS[category],
       text: RING2_TEXT[category],
-      background: 'rgba(255, 255, 255, 0.6)',
+      background: '#FFFFFF',
     }
   }
-  return {
-    border: 'rgba(73, 101, 128, 0.1)',
-    text: '#C8D8E4',
-    background: 'rgba(255, 255, 255, 0.3)',
+  // ring3 — category tint, dashed border, clearly visible but less prominent than ring2
+  const ring3Tints: Record<Category, { border: string; text: string; background: string }> = {
+    awareness:    { border: 'rgba(186, 221, 255, 0.9)', text: '#3D6E8C', background: 'rgba(186, 221, 255, 0.28)' },
+    identity:     { border: 'rgba(255, 219, 187, 0.9)', text: '#9E5830', background: 'rgba(255, 219, 187, 0.28)' },
+    experiential: { border: 'rgba(186, 255, 245, 0.9)', text: '#2A8070', background: 'rgba(186, 255, 245, 0.28)' },
   }
+  return ring3Tints[category]
 }

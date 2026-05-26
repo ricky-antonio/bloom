@@ -25,7 +25,7 @@ const RING_STROKE_WIDTH: Record<NodeRing, number> = {
   core: 2,
   ring1: 1.5,
   ring2: 1,
-  ring3: 1,
+  ring3: 1.5,
 }
 
 /* Glow circle radii (the ambient halo behind each node) */
@@ -167,6 +167,7 @@ export default function GraphNode({ node, isSelected, isExpanding, onSelect, onD
             fill={colours.background}
             stroke={colours.border}
             strokeWidth={RING_STROKE_WIDTH[node.ring]}
+            strokeDasharray={node.ring === 'ring3' ? '4 3' : undefined}
             filter={isSelected ? `url(#${filterId})` : undefined}
             style={{
               filter: isSelected ? undefined : coreFilter,
@@ -274,7 +275,8 @@ export default function GraphNode({ node, isSelected, isExpanding, onSelect, onD
                 style={{
                   fontFamily: 'var(--font-sans), Inter, sans-serif',
                   fontSize: 9,
-                  fill: '#C8D8E4',
+                  fill: colours.text,
+                  fillOpacity: 0.55,
                   pointerEvents: 'none',
                   userSelect: 'none',
                 }}
@@ -293,7 +295,7 @@ export default function GraphNode({ node, isSelected, isExpanding, onSelect, onD
                 fontFamily: 'var(--font-sans), Inter, sans-serif',
                 fontSize: 9,
                 fontWeight: 400,
-                fill: '#C8D8E4',
+                fill: colours.text,
                 pointerEvents: 'none',
                 userSelect: 'none',
               }}
