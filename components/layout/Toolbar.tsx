@@ -1,31 +1,59 @@
 'use client'
 
-import { useState } from 'react'
-import { IconAtom, IconX, IconDownload, IconTrash } from '@tabler/icons-react'
+import { IconAtom } from '@tabler/icons-react'
 
 interface ToolbarProps {
   seedConcept: string
   nodeCount: number
-  onClear: () => void
+  depth: number
+  onSave: () => void
   onExport: () => void
+  onNewConcept: () => void
+  isConfirmingClear: boolean
+  onConfirmClear: () => void
+  onCancelClear: () => void
+  onClearRequest?: () => void
 }
 
-export default function Toolbar({ seedConcept, nodeCount, onClear, onExport }: ToolbarProps) {
-  const [confirmingClear, setConfirmingClear] = useState(false)
+const secondaryBtn: React.CSSProperties = {
+  border: '0.5px solid rgba(73,101,128,0.12)',
+  background: 'rgba(255,255,255,0.7)',
+  backdropFilter: 'blur(4px)',
+  WebkitBackdropFilter: 'blur(4px)',
+  borderRadius: 8,
+  padding: '4px 10px',
+  fontSize: 11,
+  fontFamily: 'var(--font-sans), Inter, sans-serif',
+  color: '#8AABBC',
+  cursor: 'pointer',
+  whiteSpace: 'nowrap' as const,
+}
 
-  function handleClearClick() {
-    if (confirmingClear) {
-      onClear()
-      setConfirmingClear(false)
-    } else {
-      setConfirmingClear(true)
-    }
-  }
+const accentBtn: React.CSSProperties = {
+  border: '0.5px solid rgba(186,255,245,0.6)',
+  background: 'rgba(186,255,245,0.35)',
+  borderRadius: 8,
+  padding: '4px 10px',
+  fontSize: 11,
+  fontFamily: 'var(--font-sans), Inter, sans-serif',
+  color: '#40A090',
+  cursor: 'pointer',
+  whiteSpace: 'nowrap' as const,
+  fontWeight: 600,
+}
 
-  function handleCancelClear() {
-    setConfirmingClear(false)
-  }
-
+export default function Toolbar({
+  seedConcept,
+  nodeCount,
+  depth,
+  onSave,
+  onExport,
+  onNewConcept,
+  isConfirmingClear,
+  onConfirmClear,
+  onCancelClear,
+  onClearRequest,
+}: ToolbarProps) {
   return (
     <div
       style={{
@@ -46,7 +74,7 @@ export default function Toolbar({ seedConcept, nodeCount, onClear, onExport }: T
         zIndex: 100,
       }}
     >
-      {/* Logo */}
+      {/* Left — logo */}
       <span
         style={{
           fontFamily: 'var(--font-display), "Playfair Display", serif',
@@ -55,168 +83,133 @@ export default function Toolbar({ seedConcept, nodeCount, onClear, onExport }: T
           fontWeight: 800,
           color: '#496580',
           lineHeight: 1,
-          marginRight: 4,
+          flexShrink: 0,
         }}
       >
         bloom
       </span>
 
-      {/* Active concept pill */}
-      {seedConcept && (
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-            background: 'rgba(255,255,255,0.85)',
-            border: '1px solid rgba(73,101,128,0.12)',
-            borderRadius: 22,
-            backdropFilter: 'blur(6px)',
-            WebkitBackdropFilter: 'blur(6px)',
-            padding: '4px 10px 4px 8px',
-          }}
-        >
-          <IconAtom size={12} color="#BADDFF" aria-hidden />
-          <span
+      {/* Centre — active concept pill */}
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        {seedConcept && (
+          <div
             style={{
-              fontFamily: 'var(--font-display), "Playfair Display", serif',
-              fontStyle: 'italic',
-              fontSize: 13,
-              fontWeight: 700,
-              color: '#496580',
-              lineHeight: 1,
-            }}
-          >
-            {seedConcept}
-          </span>
-          <button
-            onClick={onClear}
-            aria-label="Clear concept"
-            style={{
-              border: 'none',
-              background: 'transparent',
-              cursor: 'pointer',
-              padding: 0,
-              display: 'flex',
+              display: 'inline-flex',
               alignItems: 'center',
-              lineHeight: 0,
+              gap: 6,
+              background: '#F0F7FF',
+              border: '1px solid rgba(186,221,255,0.6)',
+              borderRadius: 99,
+              padding: '4px 12px',
             }}
           >
-            <IconX size={10} color="#BACCDA" aria-hidden />
-          </button>
-        </div>
-      )}
-
-      {/* Node count badge */}
-      {nodeCount > 0 && (
-        <div
-          style={{
-            background: 'rgba(255,255,255,0.6)',
-            border: '0.5px solid rgba(73,101,128,0.08)',
-            borderRadius: 20,
-            padding: '3px 9px',
-            fontSize: 10,
-            fontFamily: 'var(--font-sans), Inter, sans-serif',
-            color: '#BACCDA',
-            lineHeight: 1.4,
-          }}
-        >
-          {nodeCount} nodes
-        </div>
-      )}
-
-      {/* Spacer */}
-      <div style={{ flex: 1 }} />
-
-      {/* Clear button */}
-      {nodeCount > 0 && (
-        confirmingClear ? (
-          <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-            <span style={{ fontSize: 11, color: '#8AABBC', fontFamily: 'var(--font-sans), Inter, sans-serif' }}>
-              Clear graph?
-            </span>
-            <button
-              onClick={handleClearClick}
-              aria-label="Confirm clear graph"
+            <IconAtom size={14} color="#BADDFF" aria-hidden />
+            <span
               style={{
-                border: '0.5px solid rgba(200,80,60,0.3)',
-                background: 'rgba(255,220,210,0.4)',
-                borderRadius: 8,
-                padding: '4px 10px',
-                fontSize: 11,
                 fontFamily: 'var(--font-sans), Inter, sans-serif',
-                color: '#C05040',
-                cursor: 'pointer',
+                fontSize: 11,
+                fontWeight: 600,
+                color: '#5A8AAA',
+                lineHeight: 1,
               }}
             >
-              Yes, clear
-            </button>
+              {seedConcept}
+            </span>
+            {nodeCount > 0 && (
+              <>
+                <span style={{ color: '#BACCDA', fontSize: 10 }}>·</span>
+                <span
+                  style={{
+                    fontFamily: 'var(--font-sans), Inter, sans-serif',
+                    fontSize: 10,
+                    fontWeight: 400,
+                    color: '#8AABBC',
+                  }}
+                  aria-label={`${nodeCount} nodes, depth ${depth}`}
+                >
+                  {nodeCount} nodes · depth {depth}
+                </span>
+              </>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Right — action buttons */}
+      <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexShrink: 0 }}>
+        {isConfirmingClear ? (
+          <>
             <button
-              onClick={handleCancelClear}
-              aria-label="Cancel clear"
+              onClick={onConfirmClear}
+              aria-label="Confirm clear graph"
               style={{
-                border: '0.5px solid rgba(73,101,128,0.1)',
-                background: 'rgba(255,255,255,0.6)',
+                border: '0.5px solid rgba(192,64,64,0.3)',
+                background: 'rgba(255,220,220,0.5)',
                 borderRadius: 8,
                 padding: '4px 10px',
                 fontSize: 11,
                 fontFamily: 'var(--font-sans), Inter, sans-serif',
-                color: '#8AABBC',
+                color: '#C04040',
                 cursor: 'pointer',
+                whiteSpace: 'nowrap',
               }}
+            >
+              Confirm clear?
+            </button>
+            <button
+              onClick={onCancelClear}
+              aria-label="Cancel clear"
+              style={secondaryBtn}
             >
               Cancel
             </button>
-          </div>
+          </>
         ) : (
-          <button
-            onClick={handleClearClick}
-            aria-label="Clear graph"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 5,
-              border: '0.5px solid rgba(73,101,128,0.1)',
-              background: 'rgba(255,255,255,0.6)',
-              backdropFilter: 'blur(4px)',
-              WebkitBackdropFilter: 'blur(4px)',
-              borderRadius: 8,
-              padding: '5px 10px',
-              fontSize: 11,
-              fontFamily: 'var(--font-sans), Inter, sans-serif',
-              color: '#8AABBC',
-              cursor: 'pointer',
-            }}
-          >
-            <IconTrash size={13} aria-hidden />
-            Clear
-          </button>
-        )
-      )}
-
-      {/* Export button */}
-      {nodeCount > 0 && (
-        <button
-          onClick={onExport}
-          aria-label="Export graph as JSON"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 5,
-            border: '0.5px solid rgba(255,219,187,0.6)',
-            background: 'rgba(255,219,187,0.4)',
-            borderRadius: 8,
-            padding: '5px 10px',
-            fontSize: 11,
-            fontFamily: 'var(--font-sans), Inter, sans-serif',
-            color: '#C07040',
-            cursor: 'pointer',
-          }}
-        >
-          <IconDownload size={13} aria-hidden />
-          Export
-        </button>
-      )}
+          <>
+            {nodeCount > 0 && onClearRequest && (
+              <button
+                onClick={onClearRequest}
+                aria-label="Clear graph"
+                style={secondaryBtn}
+              >
+                Clear
+              </button>
+            )}
+            {nodeCount > 0 && (
+              <button
+                onClick={onSave}
+                aria-label="Save map"
+                style={secondaryBtn}
+              >
+                Save map
+              </button>
+            )}
+            {nodeCount > 0 && (
+              <button
+                onClick={onExport}
+                aria-label="Export graph as JSON"
+                style={secondaryBtn}
+              >
+                Export
+              </button>
+            )}
+            <button
+              onClick={onNewConcept}
+              aria-label="New concept"
+              style={accentBtn}
+            >
+              + New concept
+            </button>
+          </>
+        )}
+      </div>
     </div>
   )
 }

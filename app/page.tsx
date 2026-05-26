@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { Toaster } from 'react-hot-toast'
 import { GraphProvider, useGraphState } from '@/lib/context/GraphContext'
 import { exportGraph } from '@/lib/graph'
@@ -15,14 +15,32 @@ import ZoomControls from '@/components/ui/ZoomControls'
 function HomeContent() {
   const { state, dispatch } = useGraphState()
   const graphRef = useRef<ConceptGraphHandle>(null)
+  const [isConfirmingClear, setIsConfirmingClear] = useState(false)
+  const clearTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const depth = state.nodes.length > 0
+    ? Math.max(...state.nodes.map(n => n.depth))
+    : 0
 
   function handleSearch(concept: string) {
     dispatch({ type: 'CLEAR_GRAPH' })
     dispatch({ type: 'EXPAND_CONCEPT', concept, depth: 0, nodeId: concept.toLowerCase().trim() })
   }
 
-  function handleClear() {
+  function handleClearRequest() {
+    setIsConfirmingClear(true)
+    clearTimerRef.current = setTimeout(() => setIsConfirmingClear(false), 4000)
+  }
+
+  function handleConfirmClear() {
+    if (clearTimerRef.current) clearTimeout(clearTimerRef.current)
     dispatch({ type: 'CLEAR_GRAPH' })
+    setIsConfirmingClear(false)
+  }
+
+  function handleCancelClear() {
+    if (clearTimerRef.current) clearTimeout(clearTimerRef.current)
+    setIsConfirmingClear(false)
   }
 
   function handleExport() {
@@ -31,9 +49,14 @@ function HomeContent() {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `bloom-${state.seedConcept || 'graph'}.json`
+    a.download = `bloom-${state.seedConcept || 'graph'}-${Date.now()}.json`
     a.click()
     URL.revokeObjectURL(url)
+  }
+
+  function handleNewConcept() {
+    const input = document.querySelector<HTMLInputElement>('[aria-label="Enter a concept to explore"]')
+    input?.focus()
   }
 
   function handleExpand(nodeId: string) {
@@ -85,8 +108,14 @@ function HomeContent() {
       <Toolbar
         seedConcept={state.seedConcept}
         nodeCount={state.nodes.length}
-        onClear={handleClear}
+        depth={depth}
+        onSave={handleExport}
         onExport={handleExport}
+        onNewConcept={handleNewConcept}
+        isConfirmingClear={isConfirmingClear}
+        onConfirmClear={handleConfirmClear}
+        onCancelClear={handleCancelClear}
+        onClearRequest={handleClearRequest}
       />
 
       {/* Search input — centred, below toolbar */}
