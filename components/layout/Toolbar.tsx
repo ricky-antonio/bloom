@@ -83,13 +83,17 @@ export default function Toolbar({
         bloom
       </span>
 
-      {/* Centre — active concept pill */}
+      {/* Centre — active concept pill (hidden during confirmation to free space) */}
       <div
         style={{
           flex: 1,
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
+          overflow: 'hidden',
+          transition: 'opacity 150ms ease',
+          opacity: isConfirmingNewConcept ? 0 : 1,
+          pointerEvents: isConfirmingNewConcept ? 'none' : 'auto',
         }}
       >
         {seedConcept && (
@@ -140,7 +144,7 @@ export default function Toolbar({
       {/* Right — action buttons */}
       <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexShrink: 0 }}>
         {isConfirmingNewConcept ? (
-          <>
+          <div key="confirming" style={{ display: 'flex', gap: 8, animation: 'toolbar-slide-in 180ms ease' }}>
             <button
               onClick={onConfirmNewConcept}
               aria-label="Confirm new concept"
@@ -165,9 +169,9 @@ export default function Toolbar({
             >
               Cancel
             </button>
-          </>
+          </div>
         ) : (
-          <>
+          <div key="normal" style={{ display: 'flex', gap: 8, animation: 'toolbar-slide-in 180ms ease' }}>
             <button
               onClick={nodeCount > 0 ? onNewConceptRequest : onConfirmNewConcept}
               aria-label="New concept"
@@ -175,9 +179,16 @@ export default function Toolbar({
             >
               + New concept
             </button>
-          </>
+          </div>
         )}
       </div>
+
+      <style>{`
+        @keyframes toolbar-slide-in {
+          from { opacity: 0; transform: translateX(8px); }
+          to   { opacity: 1; transform: translateX(0);   }
+        }
+      `}</style>
     </div>
   )
 }
