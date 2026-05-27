@@ -18,6 +18,7 @@ export default function EmptyState({ onSubmit }: EmptyStateProps) {
         justifyContent: 'center',
         pointerEvents: 'none',
         gap: 16,
+        animation: 'empty-state-enter 600ms ease both',
       }}
     >
       {/* Animated background pulse */}

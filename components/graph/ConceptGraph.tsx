@@ -19,6 +19,7 @@ export interface ConceptGraphHandle {
   zoomIn: () => void
   zoomOut: () => void
   resetZoom: () => void
+  collapse: (onComplete: () => void) => void
 }
 
 interface ConceptGraphProps {
@@ -32,10 +33,21 @@ const ConceptGraph = React.forwardRef<ConceptGraphHandle, ConceptGraphProps>(
 
     const canvasRef = useRef<GraphCanvasHandle>(null)
 
+    const [isCollapsing, setIsCollapsing] = useState(false)
+
+    useEffect(() => {
+      if (state.nodes.length === 0) setIsCollapsing(false)
+    }, [state.nodes.length])
+
     useImperativeHandle(ref, () => ({
       zoomIn:    () => canvasRef.current?.zoomIn(),
       zoomOut:   () => canvasRef.current?.zoomOut(),
       resetZoom: () => canvasRef.current?.resetZoom(),
+      collapse(onComplete: () => void) {
+        if (nodesRef.current.length === 0) { onComplete(); return }
+        setIsCollapsing(true)
+        setTimeout(onComplete, 520)
+      },
     }))
 
     // d3 internal: simulation and d3 module stored in refs, never React state
@@ -240,7 +252,14 @@ const ConceptGraph = React.forwardRef<ConceptGraphHandle, ConceptGraphProps>(
     const isFirstLoad = state.isExpanding && state.nodes.length <= 1
 
     return (
-      <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          position: 'relative',
+          ...(isCollapsing && { animation: 'graph-collapse 500ms ease forwards', pointerEvents: 'none' }),
+        }}
+      >
         {isEmpty && (
           <EmptyState onSubmit={onConceptSubmit ?? (() => {})} />
         )}

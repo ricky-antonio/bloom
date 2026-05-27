@@ -141,6 +141,16 @@ body {
   50%       { opacity: 0; }
 }
 
+@keyframes graph-collapse {
+  from { opacity: 1; transform: scale(1);    }
+  to   { opacity: 0; transform: scale(0.82); }
+}
+
+@keyframes empty-state-enter {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1);    }
+}
+
 .search-shake {
   animation: shake 0.4s ease;
 }

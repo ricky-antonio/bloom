@@ -45,11 +45,20 @@ function HomeContent() {
 
   function handleConfirmNewConcept() {
     if (clearTimerRef.current) clearTimeout(clearTimerRef.current)
-    dispatch({ type: 'CLEAR_GRAPH' })
     setIsConfirmingClear(false)
-    setTimeout(() => {
-      document.querySelector<HTMLInputElement>('[aria-label="Enter a concept to explore"]')?.focus()
-    }, 0)
+
+    function finish() {
+      dispatch({ type: 'CLEAR_GRAPH' })
+      setTimeout(() => {
+        document.querySelector<HTMLInputElement>('[aria-label="Enter a concept to explore"]')?.focus()
+      }, 0)
+    }
+
+    if (state.nodes.length > 0) {
+      graphRef.current?.collapse(finish)
+    } else {
+      finish()
+    }
   }
 
   function handleCancelNewConcept() {
