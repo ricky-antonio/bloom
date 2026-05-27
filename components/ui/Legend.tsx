@@ -29,6 +29,7 @@ export default function Legend() {
   return (
     <div
       aria-label="Graph legend"
+      className="bloom-legend"
       style={{
         position: 'absolute',
         bottom: 16,
@@ -120,6 +121,12 @@ export default function Legend() {
         @keyframes tooltip-appear {
           from { opacity: 0; transform: translateX(-50%) translateY(4px); }
           to   { opacity: 1; transform: translateX(-50%) translateY(0);   }
+        }
+        @media (max-width: 640px) {
+          .bloom-legend {
+            left: 50% !important;
+            transform: translateX(-50%);
+          }
         }
       `}</style>
     </div>
