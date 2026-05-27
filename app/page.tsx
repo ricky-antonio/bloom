@@ -103,11 +103,13 @@ function HomeContent() {
   return (
     <div
       style={{
-        width: '100vw',
-        height: '100vh',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
         overflow: 'hidden',
         background: 'linear-gradient(135deg, #FDF8F2 0%, #F5F0E8 45%, #F0EEF5 100%)',
-        position: 'relative',
       }}
     >
       {/* Ambient colour washes */}

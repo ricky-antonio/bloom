@@ -27,7 +27,7 @@ body {
   background: linear-gradient(135deg, #FDF8F2 0%, #F5F0E8 45%, #F0EEF5 100%);
   color: var(--tx-1);
   font-family: var(--font-sans), Inter, Arial, Helvetica, sans-serif;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 /* ─── Core animations ────────────────────────────────────────────────── */
