@@ -368,8 +368,8 @@ export default function DetailPanel({ onExpand, onAddTag, onDefinitionLoaded }: 
                   style={{
                     display: 'inline-flex',
                     opacity: 0,
-                    animation: 'tag-appear 220ms ease forwards',
-                    animationDelay: `${i * 55}ms`,
+                    animation: 'tag-appear 380ms ease forwards',
+                    animationDelay: `${i * 90}ms`,
                   }}
                 >
                   <ConceptTag
