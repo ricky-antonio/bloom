@@ -2,7 +2,6 @@
 
 import { useCallback, useRef, useState } from 'react'
 import { GraphProvider, useGraphState } from '@/lib/context/GraphContext'
-import { exportGraph } from '@/lib/graph'
 import { useKeyboard } from '@/lib/hooks/useKeyboard'
 import ConceptGraph from '@/components/graph/ConceptGraph'
 import type { ConceptGraphHandle } from '@/components/graph/ConceptGraph'
@@ -58,16 +57,6 @@ function HomeContent() {
     setIsConfirmingClear(false)
   }
 
-  function handleExport() {
-    const json = exportGraph(state)
-    const blob = new Blob([json], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `bloom-${state.seedConcept || 'graph'}-${Date.now()}.json`
-    a.click()
-    URL.revokeObjectURL(url)
-  }
 
 
   const handleExpand = useCallback((nodeId: string) => {
@@ -149,8 +138,6 @@ function HomeContent() {
         seedConcept={state.seedConcept}
         nodeCount={state.nodes.length}
         depth={depth}
-        onSave={handleExport}
-        onExport={handleExport}
         isConfirmingNewConcept={isConfirmingClear}
         onNewConceptRequest={handleNewConceptRequest}
         onConfirmNewConcept={handleConfirmNewConcept}

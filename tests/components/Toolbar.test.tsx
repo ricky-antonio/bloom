@@ -7,8 +7,6 @@ const defaultProps = {
   seedConcept: '',
   nodeCount: 0,
   depth: 0,
-  onSave: vi.fn(),
-  onExport: vi.fn(),
   isConfirmingNewConcept: false,
   onNewConceptRequest: vi.fn(),
   onConfirmNewConcept: vi.fn(),
@@ -44,32 +42,6 @@ describe('Toolbar', () => {
   it('does not show node count when nodeCount is 0', () => {
     render(<Toolbar {...defaultProps} seedConcept="love" nodeCount={0} depth={0} />)
     expect(screen.queryByText(/nodes/)).not.toBeInTheDocument()
-  })
-
-  it('shows Save map and Export buttons when nodeCount > 0', () => {
-    render(<Toolbar {...defaultProps} seedConcept="love" nodeCount={10} depth={1} />)
-    expect(screen.getByRole('button', { name: /save map/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /export/i })).toBeInTheDocument()
-  })
-
-  it('hides Save map and Export buttons when nodeCount is 0', () => {
-    render(<Toolbar {...defaultProps} nodeCount={0} />)
-    expect(screen.queryByRole('button', { name: /save map/i })).not.toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: /export/i })).not.toBeInTheDocument()
-  })
-
-  it('calls onSave when Save map is clicked', async () => {
-    const onSave = vi.fn()
-    render(<Toolbar {...defaultProps} seedConcept="love" nodeCount={5} depth={1} onSave={onSave} />)
-    await userEvent.click(screen.getByRole('button', { name: /save map/i }))
-    expect(onSave).toHaveBeenCalledOnce()
-  })
-
-  it('calls onExport when Export is clicked', async () => {
-    const onExport = vi.fn()
-    render(<Toolbar {...defaultProps} seedConcept="love" nodeCount={5} depth={1} onExport={onExport} />)
-    await userEvent.click(screen.getByRole('button', { name: /export/i }))
-    expect(onExport).toHaveBeenCalledOnce()
   })
 
   it('calls onNewConceptRequest when + New concept is clicked with existing graph', async () => {

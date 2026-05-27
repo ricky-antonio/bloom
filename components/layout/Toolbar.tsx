@@ -6,8 +6,6 @@ interface ToolbarProps {
   seedConcept: string
   nodeCount: number
   depth: number
-  onSave: () => void
-  onExport: () => void
   isConfirmingNewConcept: boolean
   onNewConceptRequest: () => void
   onConfirmNewConcept: () => void
@@ -45,8 +43,6 @@ export default function Toolbar({
   seedConcept,
   nodeCount,
   depth,
-  onSave,
-  onExport,
   isConfirmingNewConcept,
   onNewConceptRequest,
   onConfirmNewConcept,
@@ -171,16 +167,6 @@ export default function Toolbar({
           </>
         ) : (
           <>
-            {nodeCount > 0 && (
-              <button onClick={onSave} aria-label="Save map" style={secondaryBtn}>
-                Save map
-              </button>
-            )}
-            {nodeCount > 0 && (
-              <button onClick={onExport} aria-label="Export graph as JSON" style={secondaryBtn}>
-                Export
-              </button>
-            )}
             <button
               onClick={nodeCount > 0 ? onNewConceptRequest : onConfirmNewConcept}
               aria-label="New concept"
