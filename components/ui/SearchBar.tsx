@@ -68,7 +68,7 @@ export default function SearchBar({ onSubmit, disabled, onFocusChange }: SearchB
             border: 'none',
             outline: 'none',
             background: 'transparent',
-            fontSize: 15,
+            fontSize: 16,
             color: '#496580',
             fontFamily: 'inherit',
           }}
