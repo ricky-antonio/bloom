@@ -120,9 +120,9 @@ export default function EmptyState({ onSubmit }: EmptyStateProps) {
         }}
       >
         {([
-          { dot: '#BADDFF', text: '#3D6E8C', name: 'awareness',    desc: 'how you perceive it' },
-          { dot: '#FFDBBB', text: '#9E5830', name: 'identity',     desc: 'how it shapes you' },
-          { dot: '#BAFFF5', text: '#2A8070', name: 'experiential', desc: 'how it feels' },
+          { dot: '#BADDFF', text: '#3D6E8C', name: 'awareness',    desc: 'How you perceive and relate to the world — attention, consciousness, and observation.' },
+          { dot: '#FFDBBB', text: '#9E5830', name: 'identity',     desc: 'Who you are and how you define yourself — beliefs, roles, values, and self-concept.' },
+          { dot: '#BAFFF5', text: '#2A8070', name: 'experiential', desc: 'What you feel and live through — emotions, sensations, memories, and lived moments.' },
         ] as const).map(({ dot, text, name, desc }) => (
           <div
             key={name}
@@ -154,8 +154,11 @@ export default function EmptyState({ onSubmit }: EmptyStateProps) {
             </div>
             <span style={{
               fontFamily: 'var(--font-sans), Inter, sans-serif',
-              fontSize: 12,
+              fontSize: 11,
               color: '#7A9AAA',
+              lineHeight: 1.55,
+              textAlign: 'center',
+              maxWidth: 140,
             }}>
               {desc}
             </span>
