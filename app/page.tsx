@@ -109,6 +109,7 @@ function HomeContent() {
         right: 0,
         bottom: 0,
         overflow: 'hidden',
+        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
         background: 'linear-gradient(135deg, #FDF8F2 0%, #F5F0E8 45%, #F0EEF5 100%)',
       }}
     >
