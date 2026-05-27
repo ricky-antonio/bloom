@@ -12,7 +12,7 @@ export default function Legend() {
       aria-label="Graph legend"
       style={{
         position: 'absolute',
-        bottom: 16,
+        bottom: 'calc(16px + env(safe-area-inset-bottom, 0px))',
         left: 18,
         zIndex: 5,
         display: 'flex',

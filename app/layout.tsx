@@ -19,6 +19,11 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "bloom",
   description: "Every idea has roots.",
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    viewportFit: 'cover',
+  },
 };
 
 export default function RootLayout({

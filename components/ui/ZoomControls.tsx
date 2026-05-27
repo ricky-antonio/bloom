@@ -29,7 +29,7 @@ export default function ZoomControls({ onZoomIn, onZoomOut, onReset }: ZoomContr
     <div
       style={{
         position: 'absolute',
-        bottom: 16,
+        bottom: 'calc(16px + env(safe-area-inset-bottom, 0px))',
         right: 18,
         zIndex: 5,
         display: 'flex',
