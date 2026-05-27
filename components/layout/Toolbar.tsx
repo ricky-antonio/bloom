@@ -96,41 +96,42 @@ export default function Toolbar({
           <div
             style={{
               display: 'inline-flex',
+              flexDirection: 'column',
               alignItems: 'center',
-              gap: 7,
+              gap: 2,
               background: '#F0F7FF',
               border: '1px solid rgba(186,221,255,0.65)',
               borderRadius: 99,
               padding: '5px 16px',
             }}
           >
-            <IconAtom size={15} color="#BADDFF" aria-hidden />
-            <span
-              style={{
-                fontFamily: 'var(--font-sans), Inter, sans-serif',
-                fontSize: 13,
-                fontWeight: 600,
-                color: '#4A7A96',
-                lineHeight: 1,
-              }}
-            >
-              {seedConcept}
-            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+              <IconAtom size={15} color="#BADDFF" aria-hidden />
+              <span
+                style={{
+                  fontFamily: 'var(--font-sans), Inter, sans-serif',
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: '#4A7A96',
+                  lineHeight: 1,
+                }}
+              >
+                {seedConcept}
+              </span>
+            </div>
             {nodeCount > 0 && (
-              <>
-                <span style={{ color: '#BACCDA', fontSize: 11 }}>·</span>
-                <span
-                  style={{
-                    fontFamily: 'var(--font-sans), Inter, sans-serif',
-                    fontSize: 11,
-                    fontWeight: 400,
-                    color: '#8AABBC',
-                  }}
-                  aria-label={`${nodeCount} nodes, depth ${depth}`}
-                >
-                  {nodeCount} nodes · depth {depth}
-                </span>
-              </>
+              <span
+                style={{
+                  fontFamily: 'var(--font-sans), Inter, sans-serif',
+                  fontSize: 10,
+                  fontWeight: 400,
+                  color: '#8AABBC',
+                  lineHeight: 1,
+                }}
+                aria-label={`${nodeCount} nodes, depth ${depth}`}
+              >
+                {nodeCount} nodes · depth {depth}
+              </span>
             )}
           </div>
         )}

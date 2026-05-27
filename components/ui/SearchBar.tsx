@@ -39,7 +39,7 @@ export default function SearchBar({ onSubmit, disabled, onFocusChange }: SearchB
           display: 'flex',
           alignItems: 'center',
           gap: 10,
-          width: 400,
+          width: 'min(400px, calc(100vw - 32px))',
           height: 50,
           background: '#FFFFFF',
           border: `1px solid ${focused ? 'rgba(73,101,128,0.35)' : 'rgba(73,101,128,0.18)'}`,
